@@ -1,0 +1,34 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing & coverage
+/coverage
+
+# Next.js build & cache
+/.next/
+/out/
+/build
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Local SQLite database & journal files (auto-generated on startup)
+/bengkel.db*
+/database/*.db*
+
+# Dynamic uploaded media (keep directory structure only)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Logs & OS metadata
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.pem
+*.bak
+
+# Local environment files
+.env
+.env*.local
