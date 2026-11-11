@@ -127,7 +127,7 @@ export default function AdminDatabaseGuidePage() {
         </div>
 
         {/* 4 Step Instructions */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
           <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-1.5">
             <span className="w-6 h-6 rounded-full bg-sky-500 text-white font-bold text-xs flex items-center justify-center">1</span>
             <h3 className="text-xs font-bold text-white">Buka DBeaver</h3>
@@ -201,7 +201,7 @@ export default function AdminDatabaseGuidePage() {
         <div className="space-y-4">
           {SAMPLE_QUERIES.map((q) => (
             <div key={q.key} className="rounded-xl border border-slate-200 overflow-hidden">
-              <div className="bg-slate-100/80 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
+              <div className="bg-slate-100/80 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs font-bold text-slate-800">{q.title}</span>
                 <button
                   onClick={() => handleCopySql(q.sql, q.key)}

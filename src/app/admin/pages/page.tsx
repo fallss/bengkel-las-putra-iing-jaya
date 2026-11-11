@@ -493,7 +493,7 @@ export default function AdminPagesEditor() {
       </div>
 
       {/* Page Tabs */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-200 pb-2">
         {PAGES.map((page) => {
           const Icon = page.icon;
           const active = activePage === page.key;
@@ -505,9 +505,9 @@ export default function AdminPagesEditor() {
                 setActiveFilter('all');
                 setSearchQuery('');
               }}
-              className={`flex items-center space-x-2 px-4 py-3 rounded-t-xl text-xs font-bold border-b-2 transition whitespace-nowrap ${
+              className={`flex items-center space-x-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold border transition whitespace-nowrap ${
                 active
-                  ? 'border-sky-500 text-sky-600 bg-white shadow-sm'
+                  ? 'border-sky-300 text-sky-600 bg-white shadow-sm ring-1 ring-sky-200'
                   : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
               }`}
             >

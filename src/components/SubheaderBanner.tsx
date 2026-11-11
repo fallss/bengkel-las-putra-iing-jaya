@@ -32,11 +32,11 @@ export function SubheaderBanner({
   return (
     <div className="w-full">
       {/* Subheader Banner Image */}
-      <div className="relative w-full aspect-[21/4.75] min-h-[160px] overflow-hidden shadow-sm">
+      <div className="relative w-full aspect-[21/5.2] sm:aspect-[21/4.75] min-h-[88px] sm:min-h-[130px] lg:min-h-[160px] bg-slate-950 overflow-hidden shadow-sm">
         <img
           src={activeImage}
           alt="Bengkel Las Besi Bandung Barat Subheader"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
         />
       </div>
 

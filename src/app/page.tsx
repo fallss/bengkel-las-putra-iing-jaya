@@ -211,7 +211,7 @@ export default function HomePage() {
       <section
         className="relative w-full overflow-hidden bg-slate-950 shadow-md select-none m-0 p-0"
       >
-        <div className="w-full relative aspect-[16/9] overflow-hidden cursor-grab active:cursor-grabbing">
+        <div className="w-full relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden cursor-grab active:cursor-grabbing">
           {/* Subtle Ambient Vignette & Contrast Gradients */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/20 z-[5] pointer-events-none" />
 
@@ -267,31 +267,31 @@ export default function HomePage() {
             whileHover={{ scale: 1.08, backgroundColor: 'rgba(15, 23, 42, 0.75)' }}
             whileTap={{ scale: 0.92 }}
             onClick={() => paginate(-1)}
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-950/40 hover:bg-slate-950/75 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-md z-20 shadow-2xl border border-white/20 hover:border-sky-400/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.35)]"
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-slate-950/45 hover:bg-slate-950/75 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-md z-20 shadow-2xl border border-white/20 hover:border-sky-400/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.35)]"
             aria-label="Previous Slide"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:-translate-x-0.5" />
+            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 transition-transform group-hover:-translate-x-0.5" />
           </motion.button>
 
           <motion.button
             whileHover={{ scale: 1.08, backgroundColor: 'rgba(15, 23, 42, 0.75)' }}
             whileTap={{ scale: 0.92 }}
             onClick={() => paginate(1)}
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-950/40 hover:bg-slate-950/75 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-md z-20 shadow-2xl border border-white/20 hover:border-sky-400/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.35)]"
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-slate-950/45 hover:bg-slate-950/75 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-md z-20 shadow-2xl border border-white/20 hover:border-sky-400/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.35)]"
             aria-label="Next Slide"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-0.5" />
+            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-0.5" />
           </motion.button>
 
           {/* Floating Slide Counter Pill (Top-Right / Minimalist Luxury) */}
-          <div className="absolute top-4 sm:top-6 right-4 sm:right-6 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white/90 text-xs sm:text-sm font-mono tracking-widest z-20 shadow-lg pointer-events-none">
+          <div className="absolute top-2.5 sm:top-6 right-2.5 sm:right-6 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-white/90 text-[10px] sm:text-sm font-mono tracking-widest z-20 shadow-lg pointer-events-none">
             <span className="text-sky-400 font-bold">{String(safePage + 1).padStart(2, '0')}</span>
             <span className="mx-1 text-white/40">/</span>
             <span>{String(heroSlides.length).padStart(2, '0')}</span>
           </div>
 
           {/* Animated Indicators with Live Glowing Progress Bar */}
-          <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2.5 bg-black/45 backdrop-blur-md px-4 py-2 rounded-full z-20 shadow-xl border border-white/15">
+          <div className="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 sm:space-x-2.5 bg-black/45 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-full z-20 shadow-xl border border-white/15">
             {heroSlides.map((_, i) => (
               <button
                 key={i}
@@ -322,9 +322,9 @@ export default function HomePage() {
       </section>
 
       {/* Content wrapper with generous spacing between sections */}
-      <div className="space-y-24 sm:space-y-32 mt-16 sm:mt-24">
+      <div className="space-y-16 sm:space-y-24 lg:space-y-32 mt-10 sm:mt-20">
         {/* 2. Headline Intro (Format Sesuai Gambar Kiri - Tema Biru Muda & Logo WA) */}
-        <section className="max-w-6xl mx-auto px-6 sm:px-8 space-y-4 sm:space-y-5">
+        <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-4 sm:space-y-5">
           {/* Top Badge: BENGKEL LAS BESI JOGJA - Warna Biru Muda */}
           <div>
             <span className="inline-block bg-sky-500 text-white text-[12px] sm:text-[13px] font-extrabold uppercase tracking-wide px-4 py-1.5 rounded-lg shadow-sm shadow-sky-200">
@@ -495,11 +495,11 @@ export default function HomePage() {
 
         {/* 4. Subheader Banner & Breadcrumb Ticker Sesuai Gambar Kanan */}
         <div className="w-full">
-          <div className="relative w-full aspect-[21/4.75] min-h-[160px] overflow-hidden shadow-sm">
+          <div className="relative w-full aspect-[21/5.2] sm:aspect-[21/4.75] min-h-[88px] sm:min-h-[130px] lg:min-h-[160px] bg-slate-950 overflow-hidden shadow-sm">
             <img
               src={content.subheader_banner_image || '/assets/images/asset_12_subheader-oke.jpg'}
               alt="Bengkel Las Besi Bandung Barat Subheader"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
             />
           </div>
 
@@ -653,8 +653,8 @@ export default function HomePage() {
               </a>
 
               {/* 4 Kolom Statistik dalam 1 Baris Elegan dengan Font Biru */}
-              <div className="flex-1 flex items-center px-6 sm:px-10 lg:px-12 py-5 lg:py-0">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full">
+              <div className="flex-1 flex items-center px-4 sm:px-10 lg:px-12 py-5 lg:py-0 min-w-0">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 lg:gap-10 w-full">
                   {/* Item 1 */}
                   <div className="space-y-1">
                     <h3 className="text-2xl sm:text-[26px] font-medium text-sky-500 tracking-tight leading-none">
@@ -897,11 +897,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 10. CTA Section dengan Fixed Background Image (Parallax) + Overlay Opacity */}
-        <section className="cta-fabrikasi relative w-full !mt-3 sm:!mt-4 min-h-[340px] sm:min-h-[400px] flex items-center justify-center text-center py-12 sm:py-16 px-6 sm:px-8 overflow-hidden [clip-path:inset(0)]">
-          {/* Fixed Background Image - Tetap diam saat scroll, terlihat utuh dan proporsional */}
+        {/* 10. CTA Section dengan Fixed Background Image (Parallax pada layar tablet/desktop) + Overlay Opacity */}
+        <section className="cta-fabrikasi relative w-full !mt-3 sm:!mt-4 min-h-[300px] sm:min-h-[400px] flex items-center justify-center text-center py-12 sm:py-16 px-4 sm:px-8 overflow-hidden [clip-path:inset(0)]">
+          {/* Background Image - Absolute di mobile Android agar stabil saat URL bar scroll, Fixed di layar md+ */}
           <div
-            className="fixed inset-0 w-full h-full pointer-events-none bg-center bg-cover bg-no-repeat"
+            className="absolute md:fixed inset-0 w-full h-full pointer-events-none bg-center bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url('${content.cta_bg_image || '/assets/images/cta-fabrikasi-bg.jpg'}')`,
             }}

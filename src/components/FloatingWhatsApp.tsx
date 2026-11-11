@@ -9,7 +9,7 @@ export const FloatingWhatsApp: React.FC = () => {
   const [showTooltip, setShowTooltip] = useState(true);
 
   return (
-    <div className="fixed bottom-5 left-4 sm:bottom-6 sm:left-6 z-[950] flex items-center space-x-3">
+    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[950] flex items-center space-x-3">
       {/* Floating Button with WA link */}
       <motion.a
         href={COMPANY_INFO.waLink}
@@ -17,20 +17,21 @@ export const FloatingWhatsApp: React.FC = () => {
         rel="noreferrer"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center shadow-2xl shadow-emerald-500/40 border-2 border-white group cursor-pointer relative"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center shadow-2xl shadow-emerald-500/40 border-2 border-white group cursor-pointer relative"
         title="Whatsapp Kami"
+        aria-label="Whatsapp Kami"
       >
-        <MessageCircle className="w-7 h-7 fill-white stroke-[2]" />
+        <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white stroke-[2]" />
       </motion.a>
 
-      {/* Tooltip bubble matching original */}
+      {/* Tooltip bubble (hidden on narrow mobile screens so it never obscures page buttons) */}
       <AnimatePresence>
         {showTooltip && (
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
-            className="bg-black/90 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-lg relative flex items-center space-x-2"
+            className="hidden sm:flex bg-black/90 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-lg relative items-center space-x-2"
           >
             <span>Whatsapp</span>
             <button

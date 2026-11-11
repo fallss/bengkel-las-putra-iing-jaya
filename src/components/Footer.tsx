@@ -86,8 +86,8 @@ export const Footer: React.FC = () => {
             </p>
 
             {/* Quick WhatsApp Action Box */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white shadow-md shadow-sky-500/25 flex items-center justify-between">
-              <div>
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white shadow-md shadow-sky-500/25 flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
                 <span className="text-[11px] text-sky-100 block font-medium">Konsultasi Cepat via WA:</span>
                 <span className="text-sm font-bold font-mono tracking-wide">{COMPANY_INFO.phoneFormatted}</span>
               </div>
@@ -95,7 +95,7 @@ export const Footer: React.FC = () => {
                 href={COMPANY_INFO.waLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-2 rounded-xl bg-white text-sky-600 font-bold text-xs hover:bg-sky-50 transition shadow-sm active:scale-95"
+                className="px-3.5 py-2 rounded-xl bg-white text-sky-600 font-bold text-xs hover:bg-sky-50 transition shadow-sm active:scale-95 shrink-0"
               >
                 Chat Sekarang
               </a>
@@ -223,14 +223,14 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar: Copyright & Publisher */}
-        <div className="pt-8 border-t border-sky-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pl-24 pr-4">
+        <div className="pt-8 pb-6 sm:pb-0 border-t border-sky-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs text-slate-500 text-center sm:text-left sm:pl-16 lg:pl-20 sm:pr-12">
           <div>
             {content.footer_copyright || `© ${new Date().getFullYear()} Bengkel Las Besi Bandung Barat (Putra Iing Jaya Stainless & Besi). All Rights Reserved.`}
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-3 gap-y-1">
             <span className="text-slate-400">Kabupaten Bandung Barat, Jawa Barat</span>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <div>
               Published by <a href="https://www.asain.co.id" target="_blank" rel="noreferrer" className="text-sky-600 hover:text-sky-700 font-bold hover:underline">www.asain.co.id</a>
             </div>

@@ -112,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 md:static md:z-auto w-64 shrink-0 h-dvh md:h-full bg-slate-900 text-white flex flex-col overflow-hidden transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          sidebarOpen ? 'translate-x-0 visible' : '-translate-x-full invisible md:visible md:translate-x-0'
         }`}
       >
         {/* Brand header */}

@@ -93,7 +93,7 @@ export const CostEstimator: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900 border border-sky-950/60 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden">
+    <div className="bg-slate-900 border border-sky-950/60 rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-slate-800/40 rounded-full blur-3xl pointer-events-none" />
@@ -155,20 +155,20 @@ export const CostEstimator: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => setSelectedOptionIdx(idx)}
-                  className={`p-4 rounded-2xl border cursor-pointer transition flex items-start justify-between gap-3 min-w-0 h-full ${
+                  className={`p-3.5 sm:p-4 rounded-2xl border cursor-pointer transition flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-3 min-w-0 h-full ${
                     isSelected
                       ? 'bg-sky-500/15 border-sky-500 shadow-md ring-1 ring-sky-500/50'
                       : 'bg-slate-800/40 border-slate-800 hover:border-slate-700 hover:bg-slate-800/70'
                   }`}
                 >
                   <div className="space-y-1 min-w-0 flex-1">
-                    <div className="flex items-center space-x-2">
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                    <div className="flex items-start space-x-2">
+                      <div className={`w-4 h-4 mt-0.5 rounded-full border flex items-center justify-center flex-shrink-0 ${
                         isSelected ? 'border-sky-400 bg-sky-400' : 'border-slate-600'
                       }`}>
                         {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />}
                       </div>
-                      <span className={`text-sm font-bold ${isSelected ? 'text-sky-300' : 'text-white'}`}>
+                      <span className={`text-sm font-bold break-words ${isSelected ? 'text-sky-300' : 'text-white'}`}>
                         {opt.name}
                       </span>
                     </div>
@@ -176,11 +176,11 @@ export const CostEstimator: React.FC = () => {
                       {opt.desc}
                     </p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className="text-xs font-mono font-bold text-sky-400 block">
+                  <div className="pl-6 sm:pl-0 text-left sm:text-right flex-shrink-0">
+                    <span className="text-xs font-mono font-bold text-sky-400 inline sm:block">
                       {formatRupiah(opt.pricePerUnit)}
                     </span>
-                    <span className="text-[10px] text-slate-500">/{opt.unit}</span>
+                    <span className="text-[10px] text-slate-500 ml-1 sm:ml-0">/{opt.unit}</span>
                   </div>
                 </div>
               );
@@ -189,8 +189,8 @@ export const CostEstimator: React.FC = () => {
         </div>
 
         {/* Dimension Sliders */}
-        <div className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-slate-950/60 p-4 sm:p-5 rounded-2xl border border-slate-800/80 space-y-5 sm:space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold text-white uppercase tracking-wider">
               {currentCategory.unitLabel}:
             </span>
@@ -239,12 +239,12 @@ export const CostEstimator: React.FC = () => {
         </div>
 
         {/* Calculation Result & WhatsApp Action */}
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-sky-500/20 via-sky-500/10 to-transparent border border-sky-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-1">
+        <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-500/20 via-sky-500/10 to-transparent border border-sky-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
+          <div className="space-y-1 min-w-0">
             <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
               Perkiraan Total Biaya (Bahan + Pemasangan):
             </span>
-            <div className="text-3xl sm:text-4xl font-black text-sky-400 tracking-tight font-mono">
+            <div className="text-2xl sm:text-4xl font-black text-sky-400 tracking-tight font-mono break-words">
               {formatRupiah(estimatedCost)}
             </div>
             <p className="text-[11px] text-slate-400">

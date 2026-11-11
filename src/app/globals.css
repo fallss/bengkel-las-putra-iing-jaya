@@ -335,20 +335,29 @@
 /* Floating Back To Top button (.back-top) matching reference */
 .back-top {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  bottom: 16px;
+  right: 16px;
   z-index: 990;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 9999px;
   background-color: #0284c7;
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
   cursor: pointer;
   transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .back-top {
+    bottom: 25px;
+    right: 25px;
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .back-top:hover {
@@ -403,6 +412,16 @@
   font-weight: 400;
   line-height: 1.8;
   color: #f3f4f6;
+}
+
+@media (max-width: 640px) {
+  .cta-fabrikasi h2 {
+    font-size: 22px;
+  }
+  .cta-fabrikasi p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
 }
 
 .cta-fabrikasi__btn {

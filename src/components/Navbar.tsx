@@ -79,22 +79,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   return (
     <>
       {/* 1. Top Bar matching user screenshot with crisp Light Blue accents */}
-      <div className="w-full bg-sky-50/70 border-b border-sky-100/80 text-[12px] text-slate-600 py-2 px-4 sm:px-8">
+      <div className="w-full bg-sky-50/70 border-b border-sky-100/80 text-[11px] sm:text-[12px] text-slate-600 py-2 px-3 sm:px-8">
         <div className="pagewidth max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1.5">
           {/* Left: Tagline & Phone */}
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1">
             <div className="flex items-center space-x-1.5 text-slate-700">
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-500" />
-              <span className="font-medium">{content.topbar_tagline || 'Bengkel Las Stainless Steel Terbaik'}</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+              <span className="font-medium text-center">{content.topbar_tagline || 'Bengkel Las Stainless Steel Terbaik'}</span>
             </div>
 
             <div className="hidden sm:flex items-center space-x-1.5 text-slate-700">
-              <Phone className="w-3.5 h-3.5 text-sky-500" />
+              <Phone className="w-3.5 h-3.5 text-sky-500 shrink-0" />
               <a
                 href="https://api.whatsapp.com/send?phone=6281223459728"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-sky-600 transition font-medium"
+                className="hover:text-sky-600 transition font-medium whitespace-nowrap"
               >
                 {content.topbar_phone || '+62 812-2345-9728'}
               </a>
@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
 
           {/* Right: Social Media */}
-          <div className="flex items-center space-x-5 text-slate-500 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-5 gap-y-1 text-slate-500 text-[11px]">
             <a
               href="https://www.instagram.com/"
               target="_blank"
@@ -153,23 +153,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       >
         <div className="pagewidth max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
           {/* Logo - Ukuran pas & menyusut halus saat discroll (0.3s ease-in-out) */}
-          <Link href="/" className="site-logo flex items-center group py-0.5">
+          <Link href="/" className="site-logo flex items-center group py-0.5 shrink-0">
             <img
               src="/assets/images/logo-bengkel-las-new.png"
               alt="Bengkel Las Besi Bandung Barat"
               width={180}
               height={78}
               style={{
-                maxHeight: isShrink ? '56px' : '78px',
+                maxHeight: isShrink ? '52px' : '72px',
                 width: 'auto',
                 transition: 'max-height 0.3s ease-in-out, transform 0.3s ease-in-out',
               }}
-              className="w-auto object-contain group-hover:scale-105"
+              className="h-12 sm:h-16 lg:h-auto w-auto object-contain group-hover:scale-105"
             />
           </Link>
 
-          {/* Desktop Nav Items with minimalist typography & elegant SVG icons */}
-          <nav className="main-nav hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-5 text-[13.5px] font-['Plus_Jakarta_Sans',sans-serif]">
+          {/* Desktop/Laptop Nav Items (lg+ so 768px tablets never wrap links vertically) */}
+          <nav className="main-nav hidden lg:flex items-center space-x-2 xl:space-x-5 text-[13.5px] font-['Plus_Jakarta_Sans',sans-serif]">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               const Icon = link.icon;
@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative group inline-flex items-center space-x-1.5 py-1.5 px-2 rounded-lg transition-all duration-200 ${
+                  className={`relative group inline-flex items-center space-x-1.5 py-1.5 px-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
                     isActive
                       ? 'text-sky-600 font-semibold'
                       : 'text-slate-700 hover:text-sky-600 font-medium hover:bg-sky-50/50'
@@ -225,8 +225,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </Link>
           </nav>
 
-          {/* Mobile Right Controls */}
-          <div className="flex md:hidden items-center space-x-2">
+          {/* Mobile & Tablet Right Controls */}
+          <div className="flex lg:hidden items-center space-x-1.5 sm:space-x-2">
             <Link
               href="/login"
               className="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200"
@@ -261,7 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mobile-menu md:hidden border-t border-sky-100 bg-white/95 backdrop-blur-md px-6 py-4 space-y-2 shadow-lg"
+              className="mobile-menu lg:hidden border-t border-sky-100 bg-white/95 backdrop-blur-md px-4 sm:px-6 py-4 space-y-2 shadow-lg max-h-[calc(100dvh-5rem)] overflow-y-auto"
             >
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.href;
