@@ -203,6 +203,7 @@ const initialSettings = [
   ['instagram_url', 'https://www.instagram.com/', 'Link Profil Instagram'],
   ['facebook_url', 'https://www.facebook.com/', 'Link Halaman Facebook'],
   ['youtube_url', 'https://www.youtube.com/', 'Link Channel YouTube'],
+  ['topbar_tagline', 'Bengkel Las Stainless Steel Terbaik', 'Teks Tagline Kiri Topbar Website'],
   ['estimator_config', JSON.stringify(DEFAULT_ESTIMATOR_CONFIG), 'Konfigurasi Teks Kalkulator Estimasi Biaya'],
 ];
 

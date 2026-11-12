@@ -37,6 +37,17 @@ export async function PUT(req: Request) {
       }
     }
 
+    // Keep legacy global page_contents keys in sync with site_settings
+    const syncContent = db.prepare(
+      'UPDATE page_contents SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE page_key = ? AND section_key = ?'
+    );
+    if (typeof body.topbar_tagline === 'string') {
+      syncContent.run(body.topbar_tagline.trim(), 'global', 'topbar_tagline');
+    }
+    if (typeof body.phone === 'string') {
+      syncContent.run(body.phone.trim(), 'global', 'topbar_phone');
+    }
+
     return NextResponse.json({ success: true, message: 'Pengaturan berhasil diperbarui!' });
   } catch (err: any) {
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });

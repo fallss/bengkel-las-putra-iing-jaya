@@ -380,9 +380,9 @@ export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
       externalModule: {
         label: 'Buka Kontak & Sosmed',
         href: '/admin/settings',
-        badge: 'Link Instagram, Facebook & YouTube',
+        badge: 'Tagline Topbar, Telepon & Link Sosmed',
         description:
-          'Link ikon Instagram, Facebook, YouTube, serta nomor telepon/WhatsApp utama topbar diatur melalui menu Kontak & Sosmed.',
+          'Tagline kiri topbar, nomor telepon/WhatsApp, serta link ikon Instagram, Facebook, dan YouTube di header website diatur langsung melalui menu Kontak & Sosmed.',
       },
     },
     {

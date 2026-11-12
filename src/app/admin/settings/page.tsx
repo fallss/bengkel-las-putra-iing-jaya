@@ -16,6 +16,7 @@ import {
   Facebook,
   Youtube,
   Share2,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
@@ -31,6 +32,7 @@ export default function AdminSettingsPage() {
     instagram_url: 'https://www.instagram.com/',
     facebook_url: 'https://www.facebook.com/',
     youtube_url: 'https://www.youtube.com/',
+    topbar_tagline: 'Bengkel Las Stainless Steel Terbaik',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -132,58 +134,90 @@ export default function AdminSettingsPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5 text-sky-500" />
-              <span>Nomor Telepon Tampil</span>
-            </label>
-            <input
-              type="text"
-              value={settings.phone || ''}
-              onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
-            />
-            <p className="text-[10px] text-slate-400 mt-1">Format: +62 812-2345-9728</p>
+          <div className="sm:col-span-2 rounded-2xl bg-sky-50/70 border border-sky-200/80 p-4 sm:p-5 space-y-4">
+            <div>
+              <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-sky-500" />
+                <span>Topbar Kiri Website (Teks &amp; Nomor Telepon Header Atas)</span>
+              </h2>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Tampil berdampingan di bagian paling kiri atas seluruh halaman website bersama link media sosial.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-sky-500" />
+                  <span>Teks Tagline Topbar Kiri</span>
+                </label>
+                <input
+                  type="text"
+                  value={settings.topbar_tagline ?? ''}
+                  onChange={(e) => setSettings({ ...settings, topbar_tagline: e.target.value })}
+                  placeholder="Bengkel Las Stainless Steel Terbaik"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
+                />
+                <p className="text-[10px] text-slate-500 mt-1">Teks di samping ikon perisai biru pojok kiri atas</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-sky-500" />
+                  <span>Nomor Telepon Topbar &amp; Kontak</span>
+                </label>
+                <input
+                  type="text"
+                  value={settings.phone || ''}
+                  onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                  placeholder="+62 812-2345-9728"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-mono focus:ring-2 focus:ring-sky-500"
+                />
+                <p className="text-[10px] text-slate-500 mt-1">Format: +62 812-2345-9728 (tampil di topbar &amp; halaman Kontak)</p>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Nomor WhatsApp (Angka Murni)</span>
-            </label>
-            <input
-              type="text"
-              value={settings.whatsapp || ''}
-              onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
-            />
-            <p className="text-[10px] text-slate-400 mt-1">Format: 6281223459728 (tanpa tanda + atau spasi)</p>
-          </div>
+          <div className="sm:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Nomor WhatsApp (Angka Murni)</span>
+              </label>
+              <input
+                type="text"
+                value={settings.whatsapp || ''}
+                onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
+              />
+              <p className="text-[10px] text-slate-400 mt-1">Format: 6281223459728 (tanpa + / spasi)</p>
+            </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-sky-500" />
-              <span>Email Resmi</span>
-            </label>
-            <input
-              type="email"
-              value={settings.email || ''}
-              onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500"
-            />
-          </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-sky-500" />
+                <span>Email Resmi</span>
+              </label>
+              <input
+                type="email"
+                value={settings.email || ''}
+                onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-sky-500" />
-              <span>Jam Buka Workshop</span>
-            </label>
-            <input
-              type="text"
-              value={settings.hours || ''}
-              onChange={(e) => setSettings({ ...settings, hours: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500"
-            />
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-sky-500" />
+                <span>Jam Buka Workshop</span>
+              </label>
+              <input
+                type="text"
+                value={settings.hours || ''}
+                onChange={(e) => setSettings({ ...settings, hours: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
           </div>
 
           <div className="sm:col-span-2">

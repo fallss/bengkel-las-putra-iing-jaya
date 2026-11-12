@@ -58,6 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const settings = useSiteSettings({
     phone: '+62 812-2345-9728',
     whatsapp: '6281223459728',
+    topbar_tagline: 'Bengkel Las Stainless Steel Terbaik',
     instagram_url: 'https://www.instagram.com/',
     facebook_url: 'https://www.facebook.com/',
     youtube_url: 'https://www.youtube.com/',
@@ -106,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1">
             <div className="flex items-center space-x-1.5 text-slate-700">
               <ShieldCheck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-              <span className="font-medium text-center">{content.topbar_tagline || 'Bengkel Las Stainless Steel Terbaik'}</span>
+              <span className="font-medium text-center">{settings.topbar_tagline || content.topbar_tagline || 'Bengkel Las Stainless Steel Terbaik'}</span>
             </div>
 
             <div className="hidden sm:flex items-center space-x-1.5 text-slate-700">
