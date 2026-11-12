@@ -79,7 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Kelola Foto & Galeri', href: '/admin/photos', icon: ImageIcon },
     { label: 'Kelola Layanan', href: '/admin/services', icon: Wrench },
     { label: 'Kelola Artikel', href: '/admin/articles', icon: BookOpen },
-    { label: 'Pengaturan Kontak', href: '/admin/settings', icon: Settings },
+    { label: 'Kontak & Sosmed', href: '/admin/settings', icon: Settings },
     { label: 'Koneksi DBeaver', href: '/admin/database', icon: Database },
   ];
 

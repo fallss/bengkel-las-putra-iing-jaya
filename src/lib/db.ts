@@ -169,24 +169,24 @@ db.prepare(`
   VALUES (?, ?, ?, ?)
 `).run('admin', defaultPasswordHash, 'Administrator Bengkel', 'superadmin');
 
-// 3. Seed Site Settings if empty
-const settingsCount = db.prepare('SELECT count(*) as count FROM site_settings').get() as { count: number };
-if (settingsCount.count === 0) {
-  const insertSetting = db.prepare('INSERT OR REPLACE INTO site_settings (key, value, description) VALUES (?, ?, ?)');
-  const initialSettings = [
-    ['site_name', COMPANY_INFO.name, 'Nama Singkat Bengkel'],
-    ['company_full_name', COMPANY_INFO.fullName, 'Nama Lengkap Usaha'],
-    ['phone', COMPANY_INFO.phone, 'Nomor Telepon'],
-    ['whatsapp', COMPANY_INFO.waNumber, 'Nomor WhatsApp API'],
-    ['email', COMPANY_INFO.email, 'Email Resmi'],
-    ['address', COMPANY_INFO.address, 'Alamat Lengkap Workshop'],
-    ['hours', COMPANY_INFO.hours, 'Jam Operasional'],
-    ['maps_url', COMPANY_INFO.mapsUrl, 'Link Google Maps'],
-  ];
+// 3. Seed Site Settings (INSERT OR IGNORE ensures new keys exist on existing DBs too)
+const insertSetting = db.prepare('INSERT OR IGNORE INTO site_settings (key, value, description) VALUES (?, ?, ?)');
+const initialSettings = [
+  ['site_name', COMPANY_INFO.name, 'Nama Singkat Bengkel'],
+  ['company_full_name', COMPANY_INFO.fullName, 'Nama Lengkap Usaha'],
+  ['phone', COMPANY_INFO.phone, 'Nomor Telepon'],
+  ['whatsapp', COMPANY_INFO.waNumber, 'Nomor WhatsApp API'],
+  ['email', COMPANY_INFO.email, 'Email Resmi'],
+  ['address', COMPANY_INFO.address, 'Alamat Lengkap Workshop'],
+  ['hours', COMPANY_INFO.hours, 'Jam Operasional'],
+  ['maps_url', COMPANY_INFO.mapsUrl, 'Link Google Maps'],
+  ['instagram_url', 'https://www.instagram.com/', 'Link Profil Instagram'],
+  ['facebook_url', 'https://www.facebook.com/', 'Link Halaman Facebook'],
+  ['youtube_url', 'https://www.youtube.com/', 'Link Channel YouTube'],
+];
 
-  for (const [key, val, desc] of initialSettings) {
-    insertSetting.run(key, val, desc);
-  }
+for (const [key, val, desc] of initialSettings) {
+  insertSetting.run(key, val, desc);
 }
 
 // 4. Seed Page Contents if empty or missing

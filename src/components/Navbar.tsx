@@ -22,7 +22,13 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePageContent } from '@/lib/useDynamicData';
+import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
+
+function normalizeExternalUrl(raw?: string): string {
+  const trimmed = (raw || '').trim();
+  if (!trimmed || /^(javascript|data):/i.test(trimmed)) return '';
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
 
 interface NavbarProps {
   onOpenSearch: () => void;
@@ -48,6 +54,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     topbar_login_text: 'Portal Masuk',
     nav_login_text: 'Masuk'
   });
+
+  const settings = useSiteSettings({
+    phone: '+62 812-2345-9728',
+    whatsapp: '6281223459728',
+    instagram_url: 'https://www.instagram.com/',
+    facebook_url: 'https://www.facebook.com/',
+    youtube_url: 'https://www.youtube.com/',
+  });
+
+  const waDigits = (settings.whatsapp || '6281223459728').replace(/\D/g, '') || '6281223459728';
+  const socialLinks = [
+    { key: 'instagram', label: 'Instagram', href: normalizeExternalUrl(settings.instagram_url), icon: Instagram },
+    { key: 'facebook', label: 'Facebook', href: normalizeExternalUrl(settings.facebook_url), icon: Facebook },
+    { key: 'youtube', label: 'Youtube', href: normalizeExternalUrl(settings.youtube_url), icon: Youtube },
+  ].filter((item) => Boolean(item.href));
 
   useEffect(() => {
     const scrollThreshold = 60;
@@ -91,49 +112,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <div className="hidden sm:flex items-center space-x-1.5 text-slate-700">
               <Phone className="w-3.5 h-3.5 text-sky-500 shrink-0" />
               <a
-                href="https://api.whatsapp.com/send?phone=6281223459728"
+                href={`https://api.whatsapp.com/send?phone=${waDigits}`}
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-sky-600 transition font-medium whitespace-nowrap"
               >
-                {content.topbar_phone || '+62 812-2345-9728'}
+                {settings.phone || content.topbar_phone || '+62 812-2345-9728'}
               </a>
             </div>
           </div>
 
           {/* Right: Social Media */}
           <div className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-5 gap-y-1 text-slate-500 text-[11px]">
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center space-x-1 hover:text-sky-600 transition"
-            >
-              <Instagram className="w-3 h-3 text-sky-500" />
-              <span className="hidden md:inline">Instagram</span>
-            </a>
+            {socialLinks.map((social) => {
+              const SocialIcon = social.icon;
+              return (
+                <a
+                  key={social.key}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center space-x-1 hover:text-sky-600 transition"
+                >
+                  <SocialIcon className="w-3 h-3 text-sky-500" />
+                  <span className="hidden md:inline">{social.label}</span>
+                </a>
+              );
+            })}
 
-            <a
-              href="https://www.facebook.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center space-x-1 hover:text-sky-600 transition"
-            >
-              <Facebook className="w-3 h-3 text-sky-500" />
-              <span className="hidden md:inline">Facebook</span>
-            </a>
-
-            <a
-              href="https://www.youtube.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center space-x-1 hover:text-sky-600 transition"
-            >
-              <Youtube className="w-3 h-3 text-sky-500" />
-              <span className="hidden md:inline">Youtube</span>
-            </a>
-
-            <span className="text-slate-300">|</span>
+            {socialLinks.length > 0 && <span className="text-slate-300">|</span>}
 
             <Link
               href="/login"

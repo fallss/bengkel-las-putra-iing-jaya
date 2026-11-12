@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,13 +18,22 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
+  if (!isAdminAuthenticated()) {
+    return NextResponse.json(
+      { success: false, message: 'Akses ditolak. Silakan login sebagai Admin terlebih dahulu.' },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
-    const stmt = db.prepare('INSERT OR REPLACE INTO site_settings (key, value, description) VALUES (?, ?, ?)');
+    const stmt = db.prepare(
+      'INSERT INTO site_settings (key, value, description) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value'
+    );
 
     for (const [key, val] of Object.entries(body)) {
       if (typeof val === 'string') {
-        stmt.run(key, val, key);
+        stmt.run(key, val.trim(), key);
       }
     }
 

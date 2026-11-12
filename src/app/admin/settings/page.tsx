@@ -12,6 +12,10 @@ import {
   Clock,
   Mail,
   Compass,
+  Instagram,
+  Facebook,
+  Youtube,
+  Share2,
 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
@@ -24,6 +28,9 @@ export default function AdminSettingsPage() {
     address: '',
     hours: '',
     maps_url: '',
+    instagram_url: 'https://www.instagram.com/',
+    facebook_url: 'https://www.facebook.com/',
+    youtube_url: 'https://www.youtube.com/',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,11 +38,11 @@ export default function AdminSettingsPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch('/api/settings', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
-        if (data.success) {
-          setSettings(data.data);
+        if (data.success && data.data) {
+          setSettings((prev) => ({ ...prev, ...data.data }));
         }
       })
       .catch((e) => setErrorMessage(e.message))
@@ -76,10 +83,10 @@ export default function AdminSettingsPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <Settings className="w-6 h-6 text-sky-500" />
-            <span>Pengaturan Kontak & Profil Bengkel</span>
+            <span>Pengaturan Kontak &amp; Media Sosial</span>
           </h1>
           <p className="text-xs text-slate-500">
-            Perbarui nomor telepon, link WhatsApp, alamat workshop, dan jam buka. Tersimpan di database SQLite (tabel <code>site_settings</code>).
+            Perbarui nomor telepon, WhatsApp, alamat workshop, dan link Instagram / Facebook / YouTube pada header website. Tersimpan di database SQLite (tabel <code>site_settings</code>).
           </p>
         </div>
       </div>
@@ -203,6 +210,63 @@ export default function AdminSettingsPage() {
               onChange={(e) => setSettings({ ...settings, maps_url: e.target.value })}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
             />
+          </div>
+        </div>
+
+        {/* Media Sosial Section */}
+        <div className="pt-6 border-t border-slate-100 space-y-4">
+          <div>
+            <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+              <Share2 className="w-4 h-4 text-sky-500" />
+              <span>Link Media Sosial (Topbar Website)</span>
+            </h2>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              Link ini terhubung langsung ke ikon Instagram, Facebook, dan Youtube di header atas seluruh halaman website. Kosongkan URL bila ingin menyembunyikan salah satu ikon.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Instagram className="w-3.5 h-3.5 text-pink-500" />
+                <span>Link Instagram</span>
+              </label>
+              <input
+                type="text"
+                value={settings.instagram_url ?? ''}
+                onChange={(e) => setSettings({ ...settings, instagram_url: e.target.value })}
+                placeholder="https://www.instagram.com/akun_bengkel"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Facebook className="w-3.5 h-3.5 text-blue-600" />
+                <span>Link Facebook</span>
+              </label>
+              <input
+                type="text"
+                value={settings.facebook_url ?? ''}
+                onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
+                placeholder="https://www.facebook.com/halaman_bengkel"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Youtube className="w-3.5 h-3.5 text-rose-600" />
+                <span>Link YouTube</span>
+              </label>
+              <input
+                type="text"
+                value={settings.youtube_url ?? ''}
+                onChange={(e) => setSettings({ ...settings, youtube_url: e.target.value })}
+                placeholder="https://www.youtube.com/@channel_bengkel"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
           </div>
         </div>
 
