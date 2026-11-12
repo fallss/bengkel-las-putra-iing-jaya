@@ -17,7 +17,7 @@ import {
   Wrench,
   Camera
 } from 'lucide-react';
-import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, ArticleItem } from '@/data/content';
+import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, SERVICES_DATA, ArticleItem, ServiceItem } from '@/data/content';
 import { CostEstimator } from '@/components/CostEstimator';
 import { usePageContent } from '@/lib/useDynamicData';
 import { BounceHeading } from '@/components/BounceHeading';
@@ -36,70 +36,25 @@ const HERO_SLIDES = [
   }
 ];
 
-const NINE_SERVICES = [
-  {
-    title: 'Kanopi Besi',
-    image: '/assets/images/asset_6_7-600x450.jpg',
-    desc: 'Kami siap mengerjakan dan memasang kanopi sesuai dengan kebutuhan dan desain yang Anda inginkan.',
-    slug: 'kanopi-minimalis'
-  },
-  {
-    title: 'Kanopi Stainless Steel',
-    image: '/assets/images/asset_6_2-600x450.jpg',
-    desc: 'Kami membuat dan memasang kanopi stainless steel yang tahan lama dan mampu melindungi Anda dari cuaca.',
-    slug: 'kanopi-minimalis'
-  },
-  {
-    title: 'Railing Tangga Besi & Stainless',
-    image: '/assets/images/asset_6_4-600x450.jpg',
-    desc: 'Pembuatan railing tangga berkualitas tinggi menggunakan bahan stainless steel dan besi yang kokoh, desain yang modern.',
-    slug: 'railing-tangga-stainless'
-  },
-  {
-    title: 'Pintu Pagar Besi Minimalis',
-    image: '/assets/images/asset_6_5-600x450.jpg',
-    desc: 'Pembuatan Pagar dengan desain custom yang dapat disesuaikan. Tetap fungsional dan estetis untuk rumah atau bangunan Anda.',
-    slug: 'pintu-pagar-modern'
-  },
-  {
-    title: 'Pintu Pagar Stainless Steel',
-    image: '/assets/images/asset_6_8-600x450.jpg',
-    desc: 'Kami menggunakan material stainless steel dan besi berkualitas tinggi untuk memastikan pintu pagar yang kuat, tahan lama, dan sesuai dengan kebutuhan Anda.',
-    slug: 'pintu-pagar-modern'
-  },
-  {
-    title: 'Railing Balkon',
-    image: '/assets/images/asset_12_10-600x450.jpg',
-    desc: 'Layanan pembuatan dan pemasangan berbagai desain railing balkon, mulai dari minimalis modern hingga klasik elegan.',
-    slug: 'railing-tangga-stainless'
-  },
-  {
-    title: 'Rangka Atap Baja Ringan',
-    image: '/assets/images/asset_12_9-600x450.jpg',
-    desc: 'Menyediakan layanan pembuatan dan pemasangan rangka atap baja ringan berkualitas cocok untuk segala bangunan rumah atau toko.',
-    slug: 'konstruksi-baja-wf'
-  },
-  {
-    title: 'Tangga Putar Besi',
-    image: '/assets/images/asset_12_3-600x450.jpg',
-    desc: 'Dengan material yang kuat namun ringan, tangga putar menjadi pilihan ideal untuk rumah, toko, atau bangunan lainnya yang membutuhkan solusi tangga efisien dan tahan lama.',
-    slug: 'tangga-putar-spiral'
-  },
-  {
-    title: 'Pintu Radiasi Rumah Sakit',
-    image: '/assets/images/asset_12_0819-0409-8333-600x450.jpg',
-    desc: 'Pintu khusus yang dirancang untuk melindungi area rumah sakit dari paparan radiasi, dengan material stainless steel dan proteksi timbal.',
-    slug: 'konstruksi-baja-wf'
-  }
-];
+const HOME_MAX_SERVICES = 9;
 
 export default function HomePage() {
   const [[page, direction], setPage] = useState([0, 0]);
+  const [services, setServices] = useState<ServiceItem[]>(SERVICES_DATA.slice(0, HOME_MAX_SERVICES));
   const [articles, setArticles] = useState<ArticleItem[]>(ARTICLES_DATA);
   const [articlesPage, setArticlesPage] = useState(1);
   const articlesSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    fetch('/api/services', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setServices(data.data.slice(0, HOME_MAX_SERVICES));
+        }
+      })
+      .catch((err) => console.error('Failed loading home services:', err));
+
     fetch('/api/articles', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
@@ -441,10 +396,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-            {NINE_SERVICES.map((srv, idx) => (
+          <div id="home-services-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+            {services.slice(0, HOME_MAX_SERVICES).map((srv, idx) => (
               <motion.div
-                key={idx}
+                key={srv.id || idx}
                 initial={{ opacity: 0.92, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.05 }}
@@ -472,7 +427,7 @@ export default function HomePage() {
 
                   <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5">
                     <Link
-                      href="/layanan"
+                      href={srv.id ? `/layanan#${encodeURIComponent(srv.id)}` : '/layanan'}
                       className="flex-1 min-w-[110px] text-center px-4 py-2.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-xs transition whitespace-nowrap"
                     >
                       Detail Layanan
