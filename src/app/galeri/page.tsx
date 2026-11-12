@@ -1,19 +1,24 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, ZoomIn, X, MapPin, Phone } from 'lucide-react';
 import { GALLERY_ITEMS, COMPANY_INFO, GalleryPhoto } from '@/data/content';
 import { usePageContent } from '@/lib/useDynamicData';
 import { SubheaderBanner } from '@/components/SubheaderBanner';
 import { BounceHeading } from '@/components/BounceHeading';
+import { Pagination } from '@/components/Pagination';
 import { DEFAULT_GALERI_CATEGORIES, type CategoryItem } from '@/lib/categoryDefaults';
+
+const PHOTOS_PER_PAGE = 20;
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
   const [photos, setPhotos] = useState<GalleryPhoto[]>(GALLERY_ITEMS);
   const [categoryList, setCategoryList] = useState<CategoryItem[]>(DEFAULT_GALERI_CATEGORIES);
+  const [currentPage, setCurrentPage] = useState(1);
+  const gridTopRef = useRef<HTMLDivElement>(null);
 
   const { content } = usePageContent('galeri', {
     hero_title: 'Galeri Hasil Pengerjaan Nyata',
@@ -51,6 +56,18 @@ export default function GalleryPage() {
   const filteredPhotos = activeCategory === 'all'
     ? photos
     : photos.filter((p) => (p.category || '').toLowerCase() === activeCategory.toLowerCase());
+
+  const totalPages = Math.max(1, Math.ceil(filteredPhotos.length / PHOTOS_PER_PAGE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const paginatedPhotos = filteredPhotos.slice(
+    (safePage - 1) * PHOTOS_PER_PAGE,
+    safePage * PHOTOS_PER_PAGE
+  );
+
+  const handlePageChange = (nextPage: number) => {
+    setCurrentPage(nextPage);
+    gridTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -97,7 +114,10 @@ export default function GalleryPage() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => {
+                  setActiveCategory(cat.id);
+                  setCurrentPage(1);
+                }}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition ${
                   isActive
                     ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25 ring-1 ring-sky-400'
@@ -111,32 +131,43 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {/* Grid of photos */}
-      {filteredPhotos.length === 0 ? (
-        <div className="text-center py-12 px-4 rounded-2xl border border-sky-100 bg-sky-50/40 text-slate-600 text-sm font-medium">
-          Belum ada foto proyek pada kategori ini.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-          {filteredPhotos.map((photo) => (
-            <div
-              key={photo.id}
-              onClick={() => setSelectedPhoto(photo)}
-              className="min-w-0 group relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100 border border-slate-200 shadow-sm cursor-pointer hover:shadow-lg hover:border-sky-300 transition duration-300"
-            >
-              <img
-                src={photo.src}
-                alt={photo.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-              />
+      {/* Grid of photos (max 20 per page) */}
+      <div ref={gridTopRef} className="space-y-8 scroll-mt-24">
+        {filteredPhotos.length === 0 ? (
+          <div className="text-center py-12 px-4 rounded-2xl border border-sky-100 bg-sky-50/40 text-slate-600 text-sm font-medium">
+            Belum ada foto proyek pada kategori ini.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+            {paginatedPhotos.map((photo) => (
+              <div
+                key={photo.id}
+                onClick={() => setSelectedPhoto(photo)}
+                className="min-w-0 group relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100 border border-slate-200 shadow-sm cursor-pointer hover:shadow-lg hover:border-sky-300 transition duration-300"
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
 
-              <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
-                <ZoomIn className="w-8 h-8 drop-shadow" />
+                <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                  <ZoomIn className="w-8 h-8 drop-shadow" />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+
+        {/* Numbered Pagination (renders whenever photos > 20) */}
+        <Pagination
+          currentPage={safePage}
+          totalItems={filteredPhotos.length}
+          pageSize={PHOTOS_PER_PAGE}
+          onPageChange={handlePageChange}
+          itemLabel="foto proyek"
+        />
+      </div>
 
       {/* Lightbox Modal */}
       <AnimatePresence>
