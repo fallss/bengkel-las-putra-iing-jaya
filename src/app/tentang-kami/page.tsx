@@ -32,6 +32,10 @@ export default function AboutPage() {
   const { content } = usePageContent('tentang-kami', {
     hero_title: 'Tentang Bengkel Las Putra Iing Jaya Stainless & Besi Bandung Barat',
     hero_subtitle: 'Penyedia jasa pengerjaan logam berkualitas di Kabupaten Bandung Barat. Spesialis stainless steel dan besi untuk kanopi, pagar otomatis, railing, dan tangga putar bergaransi resmi.',
+    story_image: WORKSHOP_IMAGES[0],
+    story_image_2: WORKSHOP_IMAGES[1],
+    story_image_3: WORKSHOP_IMAGES[2],
+    story_image_4: WORKSHOP_IMAGES[3],
     story_p1: 'Bengkel Las Putra Iing Jaya Stainless & Besi adalah penyedia jasa pengerjaan logam berkualitas yang berlokasi di Padalarang, Kabupaten Bandung Barat. Kami spesialis dalam pengerjaan stainless steel dan besi untuk berbagai kebutuhan arsitektur dan konstruksi perumahan maupun komersial di kawasan Bandung Barat, Cimahi, dan sekitarnya.',
     story_p2: 'Mulai dari pembuatan kanopi modern, pagar manual & otomatis, railing balkon kaca/stainless, hingga tangga putar spiral, kami selalu memastikan setiap sambungan las rapi, kokoh, dan tahan terhadap iklim sejuk dan kelembaban udara Bandung Barat.'
   });
@@ -114,7 +118,12 @@ export default function AboutPage() {
 
         <div className="lg:col-span-6">
           <div className="grid grid-cols-2 gap-4">
-            {[content.story_image || WORKSHOP_IMAGES[0], ...WORKSHOP_IMAGES.slice(1)].map((img, idx) => (
+            {[
+              content.story_image || WORKSHOP_IMAGES[0],
+              content.story_image_2 || WORKSHOP_IMAGES[1],
+              content.story_image_3 || WORKSHOP_IMAGES[2],
+              content.story_image_4 || WORKSHOP_IMAGES[3],
+            ].map((img, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-100 aspect-[4/3] group relative"

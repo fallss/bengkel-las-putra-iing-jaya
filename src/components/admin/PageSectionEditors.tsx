@@ -293,6 +293,7 @@ interface ImageEditorProps {
   isSaving: boolean;
   isSuccess: boolean;
   isUploading: boolean;
+  compact?: boolean;
   onChangeUrl: (sectionKey: string, value: string) => void;
   onSave: (item: ContentItem) => void;
   onUploadImage: (sectionKey: string, file: File) => void;
@@ -304,6 +305,7 @@ export function ImageEditorCard({
   isSaving,
   isSuccess,
   isUploading,
+  compact = false,
   onChangeUrl,
   onSave,
   onUploadImage,
@@ -346,7 +348,7 @@ export function ImageEditorCard({
         </div>
       </div>
 
-      {item.dimension_hint && (
+      {item.dimension_hint && !compact && (
         <div className="p-2.5 bg-amber-50 border border-amber-200/90 rounded-xl flex flex-wrap items-center gap-2 text-xs text-amber-900">
           <span className="font-extrabold bg-amber-200/70 text-amber-950 px-2 py-0.5 rounded-md text-[10px] shrink-0">
             Rekomendasi Ukuran
@@ -355,8 +357,12 @@ export function ImageEditorCard({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-        <div className="md:col-span-5 bg-slate-950 rounded-xl overflow-hidden border border-slate-200 relative aspect-[16/8] flex items-center justify-center">
+      <div className={compact ? 'space-y-3' : 'grid grid-cols-1 md:grid-cols-12 gap-4 items-center'}>
+        <div
+          className={`${
+            compact ? 'aspect-[4/3]' : 'md:col-span-5 aspect-[16/8]'
+          } bg-slate-950 rounded-xl overflow-hidden border border-slate-200 relative flex items-center justify-center`}
+        >
           <img
             src={currentImageUrl || '/assets/images/asset_12_subheader-oke.jpg'}
             alt={item.title}
@@ -376,7 +382,7 @@ export function ImageEditorCard({
           )}
         </div>
 
-        <div className="md:col-span-7 space-y-3 min-w-0">
+        <div className={`${compact ? '' : 'md:col-span-7'} space-y-3 min-w-0`}>
           <div className="flex flex-wrap items-center gap-2">
             <label className="cursor-pointer px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm shrink-0">
               {isUploading ? (

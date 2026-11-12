@@ -449,6 +449,7 @@ export default function AdminPagesEditor() {
         <ImageEditorCard
           key={item.id}
           item={item}
+          compact={options?.compact}
           currentImageUrl={formData[item.section_key] ?? item.content}
           isSaving={savingKey === item.section_key}
           isSuccess={savedSuccess === item.section_key}
@@ -479,6 +480,34 @@ export default function AdminPagesEditor() {
   };
 
   const renderSectionItems = (schema: PageSectionSchema, items: ContentItem[]) => {
+    if (schema.layoutHint === 'about-gallery') {
+      const photos = items.filter((i) => i.content_type === 'image');
+      const texts = items.filter((i) => i.content_type !== 'image');
+
+      return (
+        <div className="space-y-5">
+          {photos.length > 0 && (
+            <div className="space-y-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="font-extrabold text-amber-900">
+                  Grid 4 Foto Profil Workshop (Tampil 2×2 di Sebelah Kanan Halaman Tentang Kami)
+                </span>
+                <span className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md font-semibold">
+                  Rekomendasi: 800 × 600 px (Rasio 4:3)
+                </span>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {photos.map((photo) => renderField(photo, { compact: true }))}
+              </div>
+            </div>
+          )}
+          {texts.length > 0 && (
+            <div className="space-y-3.5">{texts.map((it) => renderField(it))}</div>
+          )}
+        </div>
+      );
+    }
+
     if (schema.layoutHint === 'stats-grid') {
       const mediaAndTab = items.filter(
         (i) => i.content_type === 'image' || i.section_key === 'stat_tab_text'

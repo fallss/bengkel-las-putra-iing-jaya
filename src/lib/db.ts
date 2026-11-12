@@ -271,7 +271,10 @@ const initialContents = [
 
   // Tentang Kami
   ['tentang-kami', 'banner_image', 'Subheader Banner Atas', '/assets/images/asset_12_subheader-oke.jpg', 'image', '2100 x 475 px (Rasio Panorama ~4.4:1) | Format: JPG, PNG, WebP | Maks: 3MB'],
-  ['tentang-kami', 'story_image', 'Foto Profil Workshop & Fabrikasi', '/assets/images/asset_12_tentang-kami-1.jpg', 'image', '800 x 600 px (Rasio 4:3) atau 1200 x 800 px | Format: JPG, PNG, WebP | Maks: 3MB'],
+  ['tentang-kami', 'story_image', 'Foto Profil Workshop 1 (Kiri Atas)', '/assets/images/asset_12_tentang-kami-1.jpg', 'image', '800 x 600 px (Rasio 4:3) atau 1200 x 800 px | Format: JPG, PNG, WebP | Maks: 3MB'],
+  ['tentang-kami', 'story_image_2', 'Foto Profil Workshop 2 (Kanan Atas)', '/assets/images/asset_12_subheader-oke.jpg', 'image', '800 x 600 px (Rasio 4:3) atau 1200 x 800 px | Format: JPG, PNG, WebP | Maks: 3MB'],
+  ['tentang-kami', 'story_image_3', 'Foto Profil Workshop 3 (Kiri Bawah)', '/assets/images/asset_24_Bengkel-Las-Stainless-Steel-Te.jpg', 'image', '800 x 600 px (Rasio 4:3) atau 1200 x 800 px | Format: JPG, PNG, WebP | Maks: 3MB'],
+  ['tentang-kami', 'story_image_4', 'Foto Profil Workshop 4 (Kanan Bawah)', '/assets/images/asset_24_Jasa-pembuatan-kanopi-70x42.jpg', 'image', '800 x 600 px (Rasio 4:3) atau 1200 x 800 px | Format: JPG, PNG, WebP | Maks: 3MB'],
   ['tentang-kami', 'hero_title', 'Judul Halaman Tentang Kami', 'Tentang Bengkel Las Putra Iing Jaya', 'text', null],
   ['tentang-kami', 'hero_subtitle', 'Subjudul Halaman Tentang Kami', 'Lebih Dari 15 Tahun Melayani Pembuatan Kanopi, Pagar & Railing Stainless Terbaik di Bandung Barat', 'textarea', null],
   ['tentang-kami', 'story_title', 'Judul Kisah / Profil', 'Keahlian Logam Bertahun-Tahun di Bandung Barat', 'text', null],

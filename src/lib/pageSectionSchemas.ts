@@ -16,7 +16,7 @@ export interface PageSectionSchema {
   secondaryTitle?: string;
   note?: string;
   externalModule?: ExternalModuleLink;
-  layoutHint?: 'default' | 'stats-grid' | 'advantage-grid';
+  layoutHint?: 'default' | 'stats-grid' | 'advantage-grid' | 'about-gallery';
 }
 
 export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
@@ -214,12 +214,15 @@ export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
     {
       id: 'about-story',
       step: 3,
-      title: 'Profil Workshop, Poin Keunggulan & Foto',
-      positionLabel: 'Posisi #3 • Konten Utama Kiri & Grid Foto Kanan',
+      title: 'Profil Workshop, Poin Keunggulan & 4 Foto Workshop',
+      positionLabel: 'Posisi #3 • Konten Utama Kiri & Grid 4 Foto Kanan',
       description:
-        'Judul kisah workshop, 2 paragraf profil, 5 poin keunggulan workshop, label 2 tombol aksi, serta foto utama di grid sebelah kanan.',
+        '4 foto dokumentasi workshop (grid 2x2 di sebelah kanan), judul kisah workshop, 2 paragraf profil, 5 poin keunggulan workshop, serta label 2 tombol aksi.',
       keys: [
         'story_image',
+        'story_image_2',
+        'story_image_3',
+        'story_image_4',
         'story_title',
         'story_p1',
         'story_p2',
@@ -231,6 +234,7 @@ export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
         'btn_contact_text',
         'btn_services_text',
       ],
+      layoutHint: 'about-gallery',
     },
   ],
 
