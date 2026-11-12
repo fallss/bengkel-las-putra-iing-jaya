@@ -19,9 +19,10 @@ import {
 } from 'lucide-react';
 import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, SERVICES_DATA, ArticleItem, GalleryPhoto, ServiceItem } from '@/data/content';
 import { CostEstimator } from '@/components/CostEstimator';
-import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
+import { usePageContent } from '@/lib/useDynamicData';
 import { BounceHeading } from '@/components/BounceHeading';
 import { Pagination } from '@/components/Pagination';
+import { RunningTickerStrip } from '@/components/RunningTickerStrip';
 
 const HERO_SLIDES = [
   {
@@ -89,27 +90,6 @@ export default function HomePage() {
     cta_headline: 'Wujudkan Pagar, Kanopi & Railing Impian Hunian Anda Sekarang',
     cta_desc: 'Konsultasikan desain, ukuran, dan estimasi biaya (RAB) bersama tim ahli Bengkel Las Putra Iing Jaya. Survey lokasi dan konsultasi 100% Gratis di seluruh area Bandung Barat.',
   });
-
-  const { content: globalContent } = usePageContent('global', {
-    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
-    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
-    ticker_phone: 'WhatsApp: 0812 2345 9728',
-    ticker_btn_label: 'Whatsapp',
-  });
-
-  const siteSettings = useSiteSettings({
-    whatsapp: COMPANY_INFO.waNumber,
-    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
-    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
-    ticker_phone: 'WhatsApp: 0812 2345 9728',
-    ticker_btn_label: 'Whatsapp',
-  });
-
-  const tickerText1 = siteSettings.ticker_text_1 || globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
-  const tickerText2 = siteSettings.ticker_text_2 || globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
-  const tickerPhone = siteSettings.ticker_phone || globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
-  const tickerBtnLabel = siteSettings.ticker_btn_label || globalContent.ticker_btn_label || 'Whatsapp';
-  const tickerWaDigits = (siteSettings.whatsapp || COMPANY_INFO.waNumber || '').replace(/\D/g, '') || COMPANY_INFO.waNumber;
 
   const heroSlides = React.useMemo(() => {
     if (content?.hero_slides) {
@@ -493,77 +473,7 @@ export default function HomePage() {
           </div>
 
           {/* Subheader Breadcrumb & Running Text Ticker Sesuai Gambar Kanan */}
-          <div className="w-full bg-white border-b border-slate-200/80 shadow-[0_15px_30px_0_rgba(0,0,0,0.03)] py-3 sm:py-4 px-3 sm:px-8 lg:px-16">
-            <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-6">
-              {/* Bagian Kiri: Icon Hamburger Biru Muda + Teks home // profil + Pembatas Vertikal */}
-              <div className="flex items-center flex-shrink-0">
-                <div className="flex items-center space-x-1.5 sm:space-x-2 text-slate-500">
-                  <svg
-                    className="w-4 h-4 text-sky-400 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                  </svg>
-                  <span className="text-[11px] sm:text-xs text-slate-600 font-normal whitespace-nowrap">
-                    home // profil
-                  </span>
-                </div>
-                <div className="h-4 w-px bg-slate-300 ml-2 sm:ml-5 mr-1.5 sm:mr-4 flex-shrink-0" />
-              </div>
-
-              {/* Bagian Tengah: Teks Bergerak (Running Text Marquee) dengan Bintang Warna Biru */}
-              <div className="flex-1 overflow-hidden min-w-0">
-                <div className="running-marquee items-center gap-10 text-xs text-slate-700 font-normal select-none">
-                  {/* Loop 1 */}
-                  <div className="flex items-center gap-10 flex-shrink-0">
-                    <span>{tickerText1}</span>
-                    <span className="text-sky-500 font-bold text-xs">★</span>
-                    <span>{tickerText2}</span>
-                    <span className="text-slate-300">•</span>
-                    <span>{tickerPhone}</span>
-                    <span className="text-sky-500 font-bold text-xs">★</span>
-                  </div>
-                  {/* Loop 2 (Seamless loop) */}
-                  <div className="flex items-center gap-10 flex-shrink-0">
-                    <span>{tickerText1}</span>
-                    <span className="text-sky-500 font-bold text-xs">★</span>
-                    <span>{tickerText2}</span>
-                    <span className="text-slate-300">•</span>
-                    <span>{tickerPhone}</span>
-                    <span className="text-sky-500 font-bold text-xs">★</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bagian Kanan: Tombol Pill Whatsapp Navy Blue dengan Panah */}
-              <div className="flex-shrink-0">
-                <a
-                  href={`https://api.whatsapp.com/send?phone=${tickerWaDigits}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-[#0c1145] hover:bg-sky-500 text-white font-medium text-[11px] sm:text-xs transition-colors duration-200 shadow-sm group whitespace-nowrap"
-                >
-                  <span>{tickerBtnLabel}</span>
-                  <svg
-                    className="w-3.5 h-3.5 fill-current group-hover:translate-x-0.5 transition-transform"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm10.354-.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L9.793 7.5H5a.5.5 0 0 0 0 1h4.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
+          <RunningTickerStrip breadcrumb="home // profil" />
         </div>
 
         {/* 5. Tentang Kami Section (Horizontal Split Scroll Reveal) */}

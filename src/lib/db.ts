@@ -8,6 +8,7 @@ import {
   DEFAULT_ESTIMATOR_CATEGORIES,
   DEFAULT_ESTIMATOR_CONFIG,
 } from '@/lib/estimatorDefaults';
+import { DEFAULT_TICKER_ITEMS } from '@/lib/tickerUtils';
 
 // Ensure database directory exists
 const dbDir = path.join(process.cwd(), 'database');
@@ -204,8 +205,9 @@ const initialSettings = [
   ['facebook_url', 'https://www.facebook.com/', 'Link Halaman Facebook'],
   ['youtube_url', 'https://www.youtube.com/', 'Link Channel YouTube'],
   ['topbar_tagline', 'Bengkel Las Stainless Steel Terbaik', 'Teks Tagline Kiri Topbar Website'],
-  ['ticker_text_1', 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel', 'Teks Berjalan 1 (Semua Halaman)'],
-  ['ticker_text_2', 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat', 'Teks Berjalan 2 (Semua Halaman)'],
+  ['ticker_text_1', DEFAULT_TICKER_ITEMS[0], 'Teks Berjalan 1 (Semua Halaman)'],
+  ['ticker_text_2', DEFAULT_TICKER_ITEMS[1], 'Teks Berjalan 2 (Semua Halaman)'],
+  ['ticker_items', JSON.stringify(DEFAULT_TICKER_ITEMS), 'Daftar Teks Berjalan Dinamis (Semua Halaman)'],
   ['ticker_phone', 'WhatsApp: 0812 2345 9728', 'Teks Nomor WhatsApp di Ticker Berjalan'],
   ['ticker_btn_label', 'Whatsapp', 'Label Tombol Kanan Ticker Berjalan'],
   ['estimator_config', JSON.stringify(DEFAULT_ESTIMATOR_CONFIG), 'Konfigurasi Teks Kalkulator Estimasi Biaya'],

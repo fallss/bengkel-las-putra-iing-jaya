@@ -37,10 +37,34 @@ export async function PUT(req: Request) {
       }
     }
 
+    // If ticker_items array JSON is sent, sync legacy ticker_text_1 / ticker_text_2 in site_settings too
+    let syncedTicker1 = typeof body.ticker_text_1 === 'string' ? body.ticker_text_1.trim() : undefined;
+    let syncedTicker2 = typeof body.ticker_text_2 === 'string' ? body.ticker_text_2.trim() : undefined;
+    if (typeof body.ticker_items === 'string') {
+      try {
+        const parsed = JSON.parse(body.ticker_items);
+        if (Array.isArray(parsed)) {
+          const clean = parsed.map((v) => String(v ?? '').trim()).filter(Boolean);
+          syncedTicker1 = clean[0] || '';
+          syncedTicker2 = clean[1] || '';
+          stmt.run('ticker_items', JSON.stringify(clean), 'ticker_items');
+          stmt.run('ticker_text_1', syncedTicker1, 'ticker_text_1');
+          stmt.run('ticker_text_2', syncedTicker2, 'ticker_text_2');
+        }
+      } catch {
+        // Ignore malformed ticker_items
+      }
+    }
+
     // Keep legacy global page_contents keys in sync with site_settings
     const syncContent = db.prepare(
       'UPDATE page_contents SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE page_key = ? AND section_key = ?'
     );
+    const resolvedBody: Record<string, string | undefined> = {
+      ...body,
+      ticker_text_1: syncedTicker1,
+      ticker_text_2: syncedTicker2,
+    };
     const globalSyncMap: Array<[string, string]> = [
       ['topbar_tagline', 'topbar_tagline'],
       ['phone', 'topbar_phone'],
@@ -50,8 +74,9 @@ export async function PUT(req: Request) {
       ['ticker_btn_label', 'ticker_btn_label'],
     ];
     for (const [settingKey, sectionKey] of globalSyncMap) {
-      if (typeof body[settingKey] === 'string') {
-        syncContent.run(body[settingKey].trim(), 'global', sectionKey);
+      const val = resolvedBody[settingKey];
+      if (typeof val === 'string') {
+        syncContent.run(val.trim(), 'global', sectionKey);
       }
     }
 

@@ -18,7 +18,12 @@ import {
   Share2,
   ShieldCheck,
   Megaphone,
+  Plus,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
+import { DEFAULT_TICKER_ITEMS, parseTickerItems } from '@/lib/tickerUtils';
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({
@@ -34,11 +39,13 @@ export default function AdminSettingsPage() {
     facebook_url: 'https://www.facebook.com/',
     youtube_url: 'https://www.youtube.com/',
     topbar_tagline: 'Bengkel Las Stainless Steel Terbaik',
-    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
-    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
+    ticker_items: JSON.stringify(DEFAULT_TICKER_ITEMS),
+    ticker_text_1: DEFAULT_TICKER_ITEMS[0],
+    ticker_text_2: DEFAULT_TICKER_ITEMS[1],
     ticker_phone: 'WhatsApp: 0812 2345 9728',
     ticker_btn_label: 'Whatsapp',
   });
+  const [tickerItems, setTickerItems] = useState<string[]>([...DEFAULT_TICKER_ITEMS]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -50,23 +57,61 @@ export default function AdminSettingsPage() {
       .then((data) => {
         if (data.success && data.data) {
           setSettings((prev) => ({ ...prev, ...data.data }));
+          setTickerItems(parseTickerItems(data.data));
         }
       })
       .catch((e) => setErrorMessage(e.message))
       .finally(() => setLoading(false));
   }, []);
 
+  const handleTickerChange = (index: number, value: string) => {
+    setTickerItems((prev) => prev.map((item, idx) => (idx === index ? value : item)));
+  };
+
+  const handleAddTickerItem = () => {
+    setTickerItems((prev) => [...prev, '']);
+  };
+
+  const handleMoveTickerItem = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= tickerItems.length) return;
+    setTickerItems((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(index, 1);
+      next.splice(target, 0, moved);
+      return next;
+    });
+  };
+
+  const handleRemoveTickerItem = (index: number) => {
+    if (tickerItems.length <= 1) return;
+    setTickerItems((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanTicker = tickerItems.map((t) => t.trim()).filter(Boolean);
+    if (cleanTicker.length === 0) {
+      setErrorMessage('Minimal 1 Teks Berjalan harus diisi');
+      return;
+    }
+
     setSaving(true);
     setSaved(false);
     setErrorMessage('');
+
+    const payload: Record<string, string> = {
+      ...settings,
+      ticker_items: JSON.stringify(cleanTicker),
+      ticker_text_1: cleanTicker[0] || '',
+      ticker_text_2: cleanTicker[1] || '',
+    };
 
     try {
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -74,6 +119,8 @@ export default function AdminSettingsPage() {
         throw new Error(data.message || 'Gagal menyimpan pengaturan');
       }
 
+      setTickerItems(cleanTicker);
+      setSettings(payload);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err: any) {
@@ -255,43 +302,79 @@ export default function AdminSettingsPage() {
         {/* Teks Berjalan (Running Text Marquee di Semua Halaman) */}
         <div className="pt-6 border-t border-slate-100 space-y-4">
           <div className="rounded-2xl bg-slate-50 border border-slate-200/80 p-4 sm:p-5 space-y-4">
-            <div>
-              <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <Megaphone className="w-4 h-4 text-sky-500" />
-                <span>Teks Berjalan (Running Text di Setiap Halaman)</span>
-              </h2>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Teks marquee bergerak di bawah banner pada halaman Home, Tentang Kami, Layanan, Galeri, Artikel, dan Kontak beserta label tombol kanan.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                  <Megaphone className="w-4 h-4 text-sky-500" />
+                  <span>Teks Berjalan (Running Text di Setiap Halaman)</span>
+                </h2>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Tambahkan, ubah urutan, atau edit kalimat teks berjalan tanpa batasan jumlah pada halaman Home, Tentang Kami, Layanan, Galeri, Artikel, dan Kontak.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddTickerItem}
+                className="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-sm transition inline-flex items-center justify-center gap-1.5 flex-shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tambah Teks Berjalan</span>
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Teks Berjalan 1
-                </label>
-                <input
-                  type="text"
-                  value={settings.ticker_text_1 ?? ''}
-                  onChange={(e) => setSettings({ ...settings, ticker_text_1: e.target.value })}
-                  placeholder="Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
-                />
-              </div>
+            <div className="space-y-3">
+              {tickerItems.map((text, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-xl border border-slate-200 p-3 sm:p-3.5 space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Teks Berjalan #{idx + 1}
+                    </label>
+                    <div className="flex items-center space-x-1">
+                      <button
+                        type="button"
+                        onClick={() => handleMoveTickerItem(idx, -1)}
+                        disabled={idx === 0}
+                        title="Geser ke atas"
+                        className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 transition"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleMoveTickerItem(idx, 1)}
+                        disabled={idx === tickerItems.length - 1}
+                        title="Geser ke bawah"
+                        className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 transition"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTickerItem(idx)}
+                        disabled={tickerItems.length <= 1}
+                        title="Hapus teks berjalan"
+                        className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 disabled:opacity-30 transition"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    value={text}
+                    onChange={(e) => handleTickerChange(idx, e.target.value)}
+                    placeholder={`Masukkan kalimat teks berjalan #${idx + 1}...`}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 focus:ring-2 focus:ring-sky-500 outline-none"
+                  />
+                </div>
+              ))}
+            </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Teks Berjalan 2
-                </label>
-                <input
-                  type="text"
-                  value={settings.ticker_text_2 ?? ''}
-                  onChange={(e) => setSettings({ ...settings, ticker_text_2: e.target.value })}
-                  placeholder="Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
-                />
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/70">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Teks Nomor WhatsApp di Ticker
