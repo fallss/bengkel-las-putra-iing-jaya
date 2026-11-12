@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -19,7 +19,10 @@ import { CostEstimator } from '@/components/CostEstimator';
 import { usePageContent } from '@/lib/useDynamicData';
 import { SubheaderBanner } from '@/components/SubheaderBanner';
 import { BounceHeading } from '@/components/BounceHeading';
+import { Pagination } from '@/components/Pagination';
 import { DEFAULT_LAYANAN_CATEGORIES, type CategoryItem } from '@/lib/categoryDefaults';
+
+const CARDS_PER_PAGE = 6;
 
 export default function ServicesPage() {
   const { content } = usePageContent('layanan', {
@@ -30,6 +33,8 @@ export default function ServicesPage() {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [services, setServices] = useState(SERVICES_DATA);
   const [categoryList, setCategoryList] = useState<CategoryItem[]>(DEFAULT_LAYANAN_CATEGORIES);
+  const [currentPage, setCurrentPage] = useState(1);
+  const gridTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/categories?scope=layanan', { cache: 'no-store' })
@@ -41,11 +46,20 @@ export default function ServicesPage() {
       })
       .catch((e) => console.error(e));
 
+    const hashId =
+      typeof window !== 'undefined' && window.location.hash ? window.location.hash.slice(1) : '';
+
     fetch('/api/services', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
         if (data?.success && Array.isArray(data.data) && data.data.length > 0) {
           setServices(data.data);
+          if (hashId) {
+            const idx = data.data.findIndex((s: any) => s.id === hashId);
+            if (idx >= 0) {
+              setCurrentPage(Math.floor(idx / CARDS_PER_PAGE) + 1);
+            }
+          }
         }
       })
       .catch((e) => console.error(e));
@@ -70,6 +84,18 @@ export default function ServicesPage() {
   const filteredServices = selectedFilter === 'all'
     ? services
     : services.filter((s) => (s.category || '').toLowerCase() === selectedFilter.toLowerCase());
+
+  const totalPages = Math.max(1, Math.ceil(filteredServices.length / CARDS_PER_PAGE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const paginatedServices = filteredServices.slice(
+    (safePage - 1) * CARDS_PER_PAGE,
+    safePage * CARDS_PER_PAGE
+  );
+
+  const handlePageChange = (nextPage: number) => {
+    setCurrentPage(nextPage);
+    gridTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -102,7 +128,10 @@ export default function ServicesPage() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedFilter(cat.id)}
+                onClick={() => {
+                  setSelectedFilter(cat.id);
+                  setCurrentPage(1);
+                }}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition ${
                   isActive
                     ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25 ring-1 ring-sky-400'
@@ -116,14 +145,16 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* Services Grid */}
-      {filteredServices.length === 0 ? (
-        <div className="text-center py-12 px-4 rounded-2xl border border-sky-100 bg-sky-50/40 text-slate-600 text-sm font-medium">
-          Belum ada layanan pada kategori ini.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredServices.map((srv, idx) => (
+      {/* Anchor for smooth scroll when switching pages */}
+      <div ref={gridTopRef} className="scroll-mt-24 space-y-10">
+        {/* Services Grid (max 6 cards per page) */}
+        {paginatedServices.length === 0 ? (
+          <div className="text-center py-12 px-4 rounded-2xl border border-sky-100 bg-sky-50/40 text-slate-600 text-sm font-medium">
+            Belum ada layanan pada kategori ini.
+          </div>
+        ) : (
+          <div id="layanan-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {paginatedServices.map((srv, idx) => (
             <motion.div
               key={srv.id}
               id={srv.id}
@@ -185,7 +216,17 @@ export default function ServicesPage() {
             </motion.div>
           ))}
         </div>
-      )}
+        )}
+
+        {/* Numbered Pagination (renders whenever services > 6) */}
+        <Pagination
+          currentPage={safePage}
+          totalItems={filteredServices.length}
+          pageSize={CARDS_PER_PAGE}
+          onPageChange={handlePageChange}
+          itemLabel="layanan"
+        />
+      </div>
 
       {/* Kalkulator Biaya */}
       <section className="pt-8">
