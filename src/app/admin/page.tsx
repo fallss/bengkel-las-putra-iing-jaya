@@ -15,6 +15,7 @@ import {
   Eye,
   BookOpen,
   Calculator,
+  Users,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -100,6 +101,13 @@ export default function AdminDashboardPage() {
             >
               <Calculator className="w-4 h-4" />
               <span>Kalkulator Estimasi</span>
+            </Link>
+            <Link
+              href="/admin/clients"
+              className="px-4 py-2 rounded-xl bg-amber-400/30 hover:bg-amber-400/40 text-white font-bold text-xs border border-white/20 transition flex items-center space-x-1.5"
+            >
+              <Users className="w-4 h-4" />
+              <span>Daftar Client / Member</span>
             </Link>
           </div>
         </div>

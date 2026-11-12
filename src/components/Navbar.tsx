@@ -20,6 +20,7 @@ import {
   Wrench,
   Camera,
   BookOpen,
+  LayoutDashboard,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
@@ -47,6 +48,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isShrink, setIsShrink] = useState(false);
+  const [loggedInMember, setLoggedInMember] = useState<{ id: number; name: string } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const syncClientSession = () => {
+      fetch('/api/auth/client-login', { cache: 'no-store' })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!active) return;
+          if (data?.authenticated && data?.client) {
+            setLoggedInMember({ id: data.client.id, name: data.client.name });
+          } else {
+            setLoggedInMember(null);
+          }
+        })
+        .catch(() => {
+          if (active) setLoggedInMember(null);
+        });
+    };
+
+    syncClientSession();
+    window.addEventListener('client-auth-changed', syncClientSession);
+    return () => {
+      active = false;
+      window.removeEventListener('client-auth-changed', syncClientSession);
+    };
+  }, [pathname]);
+
+  const effectiveNavLinks = loggedInMember
+    ? [...NAV_LINKS, { text: 'Portal Member', href: '/member', icon: LayoutDashboard }]
+    : NAV_LINKS;
 
   const { content } = usePageContent('global', {
     topbar_tagline: 'Bengkel Las Stainless Steel Terbaik',
@@ -144,11 +176,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {socialLinks.length > 0 && <span className="text-slate-300">|</span>}
 
             <Link
-              href="/login"
+              href={loggedInMember ? '/member' : '/login'}
               className="flex items-center space-x-1 font-bold text-sky-600 hover:text-sky-700 transition"
             >
               <UserCheck className="w-3.5 h-3.5 text-sky-500" />
-              <span>{content.topbar_login_text || 'Portal Masuk'}</span>
+              <span>
+                {loggedInMember
+                  ? `Member: ${loggedInMember.name.split(' ')[0]}`
+                  : content.topbar_login_text || 'Portal Masuk'}
+              </span>
             </Link>
           </div>
         </div>
@@ -177,8 +213,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </Link>
 
           {/* Desktop/Laptop Nav Items (lg+ so 768px tablets never wrap links vertically) */}
-          <nav className="main-nav hidden lg:flex items-center space-x-2 xl:space-x-5 text-[13.5px] font-['Plus_Jakarta_Sans',sans-serif]">
-            {NAV_LINKS.map((link) => {
+          <nav className="main-nav hidden lg:flex items-center space-x-1.5 xl:space-x-4 text-[13px] xl:text-[13.5px] font-['Plus_Jakarta_Sans',sans-serif]">
+            {effectiveNavLinks.map((link) => {
               const isActive = pathname === link.href;
               const Icon = link.icon;
               return (
@@ -188,12 +224,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   className={`relative group inline-flex items-center space-x-1.5 py-1.5 px-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
                     isActive
                       ? 'text-sky-600 font-semibold'
+                      : link.href === '/member'
+                      ? 'text-sky-700 hover:text-sky-800 font-semibold bg-sky-50/70 hover:bg-sky-100/70'
                       : 'text-slate-700 hover:text-sky-600 font-medium hover:bg-sky-50/50'
                   }`}
                 >
                   <Icon
                     className={`w-4 h-4 transition-all duration-200 group-hover:scale-110 ${
-                      isActive
+                      isActive || link.href === '/member'
                         ? 'text-sky-600 stroke-[2.2]'
                         : 'text-slate-400 group-hover:text-sky-500 stroke-[1.8]'
                     }`}
@@ -222,24 +260,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Search className="w-4 h-4 stroke-[2]" />
             </button>
 
-            {/* Login / Portal Pill Button */}
+            {/* Login / Member Portal Pill Button */}
             <Link
-              href="/login"
-              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-sky-50/80 hover:bg-sky-500 text-sky-700 hover:text-white border border-sky-200 hover:border-sky-500 text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] tracking-tight transition-all duration-200 shadow-sm hover:shadow ml-1"
-              title="Portal Login Client & Admin"
+              href={loggedInMember ? '/member' : '/login'}
+              className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] tracking-tight transition-all duration-200 shadow-sm hover:shadow ml-1 whitespace-nowrap ${
+                loggedInMember
+                  ? 'bg-sky-500 hover:bg-sky-600 text-white border border-sky-500'
+                  : 'bg-sky-50/80 hover:bg-sky-500 text-sky-700 hover:text-white border border-sky-200 hover:border-sky-500'
+              }`}
+              title={loggedInMember ? `Portal Member: ${loggedInMember.name}` : 'Portal Login Client & Admin'}
             >
               <User className="w-3.5 h-3.5 stroke-[2]" />
-              <span>{content.nav_login_text || 'Masuk'}</span>
+              <span>
+                {loggedInMember
+                  ? loggedInMember.name.split(' ')[0]
+                  : content.nav_login_text || 'Masuk'}
+              </span>
             </Link>
           </nav>
 
           {/* Mobile & Tablet Right Controls */}
           <div className="flex lg:hidden items-center space-x-1.5 sm:space-x-2">
             <Link
-              href="/login"
-              className="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200"
-              aria-label="Login"
-              title="Portal Masuk"
+              href={loggedInMember ? '/member' : '/login'}
+              className={`p-1.5 rounded-lg border transition ${
+                loggedInMember
+                  ? 'bg-sky-500 text-white border-sky-500'
+                  : 'bg-sky-50 text-sky-600 hover:bg-sky-100 border-sky-200'
+              }`}
+              aria-label={loggedInMember ? 'Portal Member' : 'Login'}
+              title={loggedInMember ? `Portal Member: ${loggedInMember.name}` : 'Portal Masuk'}
             >
               <User className="w-4 h-4" />
             </Link>
@@ -271,7 +321,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               exit={{ opacity: 0, height: 0 }}
               className="mobile-menu lg:hidden border-t border-sky-100 bg-white/95 backdrop-blur-md px-4 sm:px-6 py-4 space-y-2 shadow-lg max-h-[calc(100dvh-5rem)] overflow-y-auto"
             >
-              {NAV_LINKS.map((link) => {
+              {effectiveNavLinks.map((link) => {
                 const isActive = pathname === link.href;
                 const Icon = link.icon;
                 return (
@@ -281,12 +331,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-xl text-[13.5px] font-['Plus_Jakarta_Sans',sans-serif] transition ${
                       isActive
                         ? 'text-sky-600 bg-sky-50 font-semibold'
+                        : link.href === '/member'
+                        ? 'text-sky-700 bg-sky-50/70 font-semibold'
                         : 'text-slate-700 hover:bg-sky-50/50 hover:text-sky-600 font-medium'
                     }`}
                   >
                     <Icon
                       className={`w-4 h-4 ${
-                        isActive
+                        isActive || link.href === '/member'
                           ? 'text-sky-600 stroke-[2.2]'
                           : 'text-slate-400 stroke-[1.8]'
                       }`}
@@ -298,12 +350,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
               <div className="pt-2 border-t border-sky-100">
                 <Link
-                  href="/login"
+                  href={loggedInMember ? '/member' : '/login'}
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs shadow-sm transition"
                 >
                   <span className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span>Masuk Portal (Client & Admin)</span>
+                    <span>
+                      {loggedInMember
+                        ? `Buka Portal Member (${loggedInMember.name})`
+                        : 'Masuk Portal (Client & Admin)'}
+                    </span>
                   </span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>

@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ShieldCheck,
   User,
+  UserPlus,
   Lock,
   ArrowRight,
   AlertCircle,
@@ -15,24 +16,66 @@ import {
   CheckCircle2,
   Database,
   ArrowLeft,
-  KeyRound,
-  ExternalLink
+  Mail,
+  MapPin,
+  Wrench,
 } from 'lucide-react';
+
+const PROJECT_CATEGORIES = [
+  'Kanopi & Atap Carport',
+  'Pintu Pagar Besi / Otomatis',
+  'Teralis Jendela & Pintu',
+  'Railing Tangga & Balkon',
+  'Tangga Putar / Spiral',
+  'Stainless Steel Custom',
+  'Konstruksi Baja / Mezannine',
+];
 
 export default function UnifiedLoginPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'client' | 'admin'>('client');
+  const [clientMode, setClientMode] = useState<'login' | 'register'>('login');
 
-  // Client form state
+  // Client login form state
   const [clientPhone, setClientPhone] = useState('081223459728');
+  const [clientPassword, setClientPassword] = useState('');
   const [clientLoading, setClientLoading] = useState(false);
   const [clientError, setClientError] = useState('');
+
+  // Client registration form state
+  const [regForm, setRegForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    password: '',
+    projectCategory: PROJECT_CATEGORIES[0],
+    projectName: '',
+    location: '',
+  });
+  const [regLoading, setRegLoading] = useState(false);
+  const [regError, setRegError] = useState('');
 
   // Admin form state
   const [adminUsername, setAdminUsername] = useState('admin');
   const [adminPassword, setAdminPassword] = useState('adminbengkel123!');
   const [adminLoading, setAdminLoading] = useState(false);
   const [adminError, setAdminError] = useState('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'admin') setActiveTab('admin');
+    if (params.get('mode') === 'register') {
+      setActiveTab('client');
+      setClientMode('register');
+    }
+  }, []);
+
+  const notifyClientAuthChanged = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('client-auth-changed'));
+    }
+  };
 
   // Client Submit
   const handleClientSubmit = async (e?: React.FormEvent, isDemo = false) => {
@@ -44,7 +87,11 @@ export default function UnifiedLoginPage() {
       const res = await fetch('/api/auth/client-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: clientPhone, isDemo }),
+        body: JSON.stringify({
+          identifier: clientPhone,
+          password: clientPassword,
+          isDemo,
+        }),
       });
 
       const data = await res.json();
@@ -52,11 +99,41 @@ export default function UnifiedLoginPage() {
         setClientError(data.message || 'Data tidak ditemukan');
         setClientLoading(false);
       } else {
-        router.push('/client/dashboard');
+        notifyClientAuthChanged();
+        router.push('/member');
+        router.refresh();
       }
     } catch {
       setClientError('Terjadi kesalahan jaringan');
       setClientLoading(false);
+    }
+  };
+
+  // Client Register Submit
+  const handleClientRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRegLoading(true);
+    setRegError('');
+
+    try {
+      const res = await fetch('/api/auth/client-register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(regForm),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setRegError(data.message || 'Pendaftaran gagal, periksa data Anda.');
+        setRegLoading(false);
+      } else {
+        notifyClientAuthChanged();
+        router.push('/member');
+        router.refresh();
+      }
+    } catch {
+      setRegError('Terjadi kesalahan jaringan saat mendaftar.');
+      setRegLoading(false);
     }
   };
 
@@ -160,78 +237,294 @@ export default function UnifiedLoginPage() {
 
           {/* Card Body */}
           <div className="p-5 sm:p-6">
-            {/* TAB 1: CLIENT LOGIN */}
+            {/* TAB 1: CLIENT LOGIN & REGISTER */}
             {activeTab === 'client' && (
               <div className="space-y-4">
-                <div>
-                  <div className="flex items-center space-x-2 text-sky-700 font-bold text-sm sm:text-base mb-0.5">
-                    <Sparkles className="w-4 h-4 text-amber-500" />
-                    <h2>Akses Pelanggan / Klien</h2>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Masukkan nomor WhatsApp atau telepon Anda untuk melihat progres pengerjaan kanopi, pagar, atau tangga putar Anda.
-                  </p>
-                </div>
-
-                {clientError && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{clientError}</span>
-                  </div>
-                )}
-
-                <form onSubmit={(e) => handleClientSubmit(e, false)} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Nomor WhatsApp / HP Klien
-                    </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        value={clientPhone}
-                        onChange={(e) => setClientPhone(e.target.value)}
-                        required
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition font-medium"
-                        placeholder="Contoh: 081223459728"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={clientLoading}
-                    className="w-full py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-sm shadow-md shadow-sky-200 transition flex items-center justify-center space-x-2 disabled:opacity-50"
-                  >
-                    {clientLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        <span>Masuk & Cek Progres Pesanan</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {/* Instant Demo Client button */}
-                <div className="p-3.5 rounded-2xl bg-sky-50/80 border border-sky-100 text-xs text-slate-600 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sky-800">Uji Coba Cepat (Tanpa Perlu Daftar):</span>
-                    <span className="text-[10px] bg-sky-200/60 text-sky-800 px-2 py-0.5 rounded-full font-bold">1-Klik</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500">
-                    Klik tombol di bawah untuk langsung mencoba akun demo proyek Bapak Hendra (Kanopi & Pagar Otomatis):
-                  </p>
+                {/* Sub-switcher: Masuk vs Daftar Member */}
+                <div className="grid grid-cols-2 gap-1.5 bg-sky-50/90 p-1 rounded-xl border border-sky-100">
                   <button
                     type="button"
-                    onClick={() => handleClientSubmit(undefined, true)}
-                    className="w-full py-2 px-3 rounded-lg bg-white hover:bg-sky-100 text-sky-700 font-bold text-xs border border-sky-200 transition flex items-center justify-center space-x-1.5"
+                    onClick={() => {
+                      setClientMode('login');
+                      setClientError('');
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                      clientMode === 'login'
+                        ? 'bg-white text-sky-700 shadow-sm border border-sky-100'
+                        : 'text-slate-600 hover:text-sky-700'
+                    }`}
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Coba Masuk Sebagai Klien Demo</span>
+                    <User className="w-3.5 h-3.5" />
+                    <span>Masuk Akun</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClientMode('register');
+                      setRegError('');
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                      clientMode === 'register'
+                        ? 'bg-white text-sky-700 shadow-sm border border-sky-100'
+                        : 'text-slate-600 hover:text-sky-700'
+                    }`}
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Daftar Member</span>
                   </button>
                 </div>
+
+                {clientMode === 'login' ? (
+                  <>
+                    <div>
+                      <div className="flex items-center space-x-2 text-sky-700 font-bold text-sm sm:text-base mb-0.5">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        <h2>Masuk Portal Member / Client</h2>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Masukkan nomor WhatsApp atau Email yang sudah terdaftar untuk membuka menu khusus Member dan cek progres pengerjaan.
+                      </p>
+                    </div>
+
+                    {clientError && (
+                      <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{clientError}</span>
+                      </div>
+                    )}
+
+                    <form onSubmit={(e) => handleClientSubmit(e, false)} className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          Nomor WhatsApp / Email
+                        </label>
+                        <div className="relative">
+                          <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={clientPhone}
+                            onChange={(e) => setClientPhone(e.target.value)}
+                            required
+                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition font-medium"
+                            placeholder="Contoh: 081223459728 atau nama@email.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          Password Akun
+                        </label>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="password"
+                            value={clientPassword}
+                            onChange={(e) => setClientPassword(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition font-medium"
+                            placeholder="Password saat daftar (kosongkan khusus akun demo)"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={clientLoading}
+                        className="w-full py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-sm shadow-md shadow-sky-200 transition flex items-center justify-center space-x-2 disabled:opacity-50"
+                      >
+                        {clientLoading ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <span>Masuk ke Portal Member</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
+                      </button>
+                    </form>
+
+                    {/* Instant Demo Client button */}
+                    <div className="p-3.5 rounded-2xl bg-sky-50/80 border border-sky-100 text-xs text-slate-600 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-sky-800">Uji Coba Cepat (Tanpa Perlu Daftar):</span>
+                        <span className="text-[10px] bg-sky-200/60 text-sky-800 px-2 py-0.5 rounded-full font-bold">1-Klik</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500">
+                        Klik tombol di bawah untuk langsung mencoba akun demo proyek Bapak Hendra (Kanopi & Pagar Otomatis):
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => handleClientSubmit(undefined, true)}
+                        className="w-full py-2 px-3 rounded-lg bg-white hover:bg-sky-100 text-sky-700 font-bold text-xs border border-sky-200 transition flex items-center justify-center space-x-1.5"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>Coba Masuk Sebagai Klien Demo</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <div className="flex items-center space-x-2 text-sky-700 font-bold text-sm sm:text-base mb-0.5">
+                        <UserPlus className="w-4 h-4 text-sky-600" />
+                        <h2>Daftar Akun Member / Client Baru</h2>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Data pendaftaran Anda otomatis masuk ke sistem admin bengkel dan membuka halaman khusus{' '}
+                        <strong className="text-sky-700">Portal Member</strong>.
+                      </p>
+                    </div>
+
+                    {regError && (
+                      <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{regError}</span>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleClientRegister} className="space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Nama Lengkap *
+                          </label>
+                          <div className="relative">
+                            <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              required
+                              value={regForm.name}
+                              onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
+                              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                              placeholder="Nama Bapak / Ibu"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            No. WhatsApp *
+                          </label>
+                          <div className="relative">
+                            <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              required
+                              value={regForm.phone}
+                              onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })}
+                              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                              placeholder="0812xxxxxxxx"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Email (Opsional)
+                          </label>
+                          <div className="relative">
+                            <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="email"
+                              value={regForm.email}
+                              onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
+                              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                              placeholder="email@anda.com"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Buat Password *
+                          </label>
+                          <div className="relative">
+                            <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="password"
+                              required
+                              minLength={4}
+                              value={regForm.password}
+                              onChange={(e) => setRegForm({ ...regForm, password: e.target.value })}
+                              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                              placeholder="Minimal 4 karakter"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          Kategori Layanan
+                        </label>
+                        <div className="relative">
+                          <Wrench className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <select
+                            value={regForm.projectCategory}
+                            onChange={(e) => setRegForm({ ...regForm, projectCategory: e.target.value })}
+                            className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                          >
+                            {PROJECT_CATEGORIES.map((cat) => (
+                              <option key={cat} value={cat}>
+                                {cat}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Kebutuhan Proyek *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={regForm.projectName}
+                            onChange={(e) => setRegForm({ ...regForm, projectName: e.target.value })}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            placeholder="Misal: Kanopi Alderon 5x4m"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Lokasi Pemasangan *
+                          </label>
+                          <div className="relative">
+                            <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              required
+                              value={regForm.location}
+                              onChange={(e) => setRegForm({ ...regForm, location: e.target.value })}
+                              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                              placeholder="Kecamatan / Kota"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={regLoading}
+                        className="w-full py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-sm shadow-md shadow-sky-200 transition flex items-center justify-center space-x-2 disabled:opacity-50"
+                      >
+                        {regLoading ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <span>Daftar & Buka Portal Member</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  </>
+                )}
               </div>
             )}
 

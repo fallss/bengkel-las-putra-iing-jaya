@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   BookOpen,
   Calculator,
+  Users,
 } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -76,6 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const NAV_ITEMS = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { label: 'Daftar Client / Member', href: '/admin/clients', icon: Users },
     { label: 'Kelola Halaman & Banner', href: '/admin/pages', icon: FileText },
     { label: 'Kelola Foto & Galeri', href: '/admin/photos', icon: ImageIcon },
     { label: 'Kelola Layanan', href: '/admin/services', icon: Wrench },
