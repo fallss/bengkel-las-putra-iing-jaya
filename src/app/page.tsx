@@ -17,7 +17,7 @@ import {
   Wrench,
   Camera
 } from 'lucide-react';
-import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, SERVICES_DATA, ArticleItem, ServiceItem } from '@/data/content';
+import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, SERVICES_DATA, ArticleItem, GalleryPhoto, ServiceItem } from '@/data/content';
 import { CostEstimator } from '@/components/CostEstimator';
 import { usePageContent } from '@/lib/useDynamicData';
 import { BounceHeading } from '@/components/BounceHeading';
@@ -37,10 +37,14 @@ const HERO_SLIDES = [
 ];
 
 const HOME_MAX_SERVICES = 9;
+const HOME_MAX_GALLERY = 8;
 
 export default function HomePage() {
   const [[page, direction], setPage] = useState([0, 0]);
   const [services, setServices] = useState<ServiceItem[]>(SERVICES_DATA.slice(0, HOME_MAX_SERVICES));
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>(
+    [...GALLERY_ITEMS].reverse().slice(0, HOME_MAX_GALLERY)
+  );
   const [articles, setArticles] = useState<ArticleItem[]>(ARTICLES_DATA);
   const [articlesPage, setArticlesPage] = useState(1);
   const articlesSectionRef = useRef<HTMLElement>(null);
@@ -54,6 +58,15 @@ export default function HomePage() {
         }
       })
       .catch((err) => console.error('Failed loading home services:', err));
+
+    fetch('/api/photos', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setGalleryPhotos(data.data.slice(0, HOME_MAX_GALLERY));
+        }
+      })
+      .catch((err) => console.error('Failed loading home gallery photos:', err));
 
     fetch('/api/articles', { cache: 'no-store' })
       .then((res) => res.json())
@@ -701,8 +714,8 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-            {GALLERY_ITEMS.slice(0, 8).map((photo, i) => (
+          <div id="home-gallery-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+            {galleryPhotos.slice(0, HOME_MAX_GALLERY).map((photo, i) => (
               <motion.div
                 key={photo.id}
                 initial={{ opacity: 0.92, y: 12 }}
