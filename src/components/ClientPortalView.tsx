@@ -151,7 +151,7 @@ export default function ClientPortalView({ isolated = false }: ClientPortalViewP
     await fetch('/api/auth/client-logout', { method: 'POST' });
     setClient(null);
     notifyAuthChanged();
-    router.push('/login');
+    router.push('/');
     router.refresh();
   };
 
@@ -176,16 +176,23 @@ export default function ClientPortalView({ isolated = false }: ClientPortalViewP
 
           <div className="space-y-2">
             <span className="inline-block text-[11px] font-bold uppercase tracking-widest text-sky-600 bg-sky-50 px-3 py-1 rounded-full">
-              Area Khusus Member & Pelanggan
+              Portal Member (Opsional)
             </span>
             <h1 className="text-2xl font-black text-slate-900">Portal Pelanggan Belum Aktif</h1>
             <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-              Silakan masuk atau daftar akun member baru untuk memantau progres pengelasan, rincian RAB,
-              serta jadwal survey & instalasi proyek Anda secara real-time.
+              Login bersifat opsional — Anda tetap dapat melihat seluruh layanan, galeri, dan kalkulator harga di website utama tanpa perlu daftar. Daftar/masuk hanya diperlukan jika ingin memantau progres pesanan Anda.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <Link
+            href="/"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm transition"
+          >
+            <span>Buka Website Utama</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <Link
               href="/login?tab=client&mode=register"
               className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs shadow-md shadow-sky-200 transition"

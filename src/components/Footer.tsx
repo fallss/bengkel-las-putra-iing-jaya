@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
                 { label: 'Galeri Proyek', href: '/galeri' },
                 { label: 'Artikel & Tips', href: '/artikel' },
                 { label: 'Kontak Workshop', href: '/kontak' },
-                { label: 'Portal Masuk (Client & Admin)', href: '/login' },
+                { label: 'Login / Daftar Member (Opsional)', href: '/login' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
