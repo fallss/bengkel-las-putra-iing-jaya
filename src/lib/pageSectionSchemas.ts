@@ -126,7 +126,14 @@ export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
         'stat_lbl_4',
       ],
       layoutHint: 'stats-grid',
-      note: 'Tepat di bawah seksi statistik ini, website menampilkan Kalkulator Estimasi Biaya interaktif secara otomatis.',
+      externalModule: {
+        badge: 'KALKULATOR ESTIMASI',
+        label: 'Kelola Kategori & Harga Kalkulator Estimasi',
+        href: '/admin/calculator',
+        description:
+          'Edit kategori (Kanopi, Pagar, Railing, Tangga, atau tambah baru), ubah daftar bahan & harga satuan per m² / m¹, serta sesuaikan batas ukuran slider langsung dari panel admin.',
+      },
+      note: 'Tepat di bawah seksi statistik ini, website menampilkan Kalkulator Estimasi Biaya interaktif yang mengambil kategori & harga dari database secara live.',
     },
     {
       id: 'home-gallery',

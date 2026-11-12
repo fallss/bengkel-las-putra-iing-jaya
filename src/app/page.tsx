@@ -691,6 +691,7 @@ export default function HomePage() {
 
         {/* 7. Interactive Cost Estimator (Smooth scroll reveal) */}
         <motion.section
+          id="kalkulator-estimasi"
           initial={{ opacity: 0, y: 35 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}

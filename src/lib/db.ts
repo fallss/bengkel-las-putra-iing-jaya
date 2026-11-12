@@ -4,6 +4,10 @@ import fs from 'fs';
 import crypto from 'crypto';
 import { COMPANY_INFO, SERVICES_DATA, GALLERY_ITEMS, ARTICLES_DATA } from '@/data/content';
 import { getDefaultCategories, type CategoryScope } from '@/lib/categoryDefaults';
+import {
+  DEFAULT_ESTIMATOR_CATEGORIES,
+  DEFAULT_ESTIMATOR_CONFIG,
+} from '@/lib/estimatorDefaults';
 
 // Ensure database directory exists
 const dbDir = path.join(process.cwd(), 'database');
@@ -119,6 +123,22 @@ db.exec(`
     notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS estimator_categories (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    unit_label TEXT NOT NULL,
+    calc_mode TEXT NOT NULL DEFAULT 'area',
+    result_unit TEXT NOT NULL DEFAULT 'm²',
+    primary_label TEXT NOT NULL DEFAULT 'Panjang',
+    primary_max INTEGER NOT NULL DEFAULT 30,
+    secondary_label TEXT DEFAULT 'Lebar',
+    secondary_max INTEGER DEFAULT 15,
+    options TEXT NOT NULL DEFAULT '[]',
+    sort_order INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 try {
@@ -183,6 +203,7 @@ const initialSettings = [
   ['instagram_url', 'https://www.instagram.com/', 'Link Profil Instagram'],
   ['facebook_url', 'https://www.facebook.com/', 'Link Halaman Facebook'],
   ['youtube_url', 'https://www.youtube.com/', 'Link Channel YouTube'],
+  ['estimator_config', JSON.stringify(DEFAULT_ESTIMATOR_CONFIG), 'Konfigurasi Teks Kalkulator Estimasi Biaya'],
 ];
 
 for (const [key, val, desc] of initialSettings) {
@@ -410,6 +431,37 @@ for (const scope of ['layanan', 'galeri'] as CategoryScope[]) {
   }
 }
 
+// 9. Seed Estimator Categories if empty (preserve admin edits/deletes)
+const estimatorCount = db
+  .prepare('SELECT count(*) as count FROM estimator_categories')
+  .get() as { count: number };
+if (estimatorCount.count === 0) {
+  const insertEstimatorCategory = db.prepare(`
+    INSERT OR IGNORE INTO estimator_categories (
+      id, title, unit_label, calc_mode, result_unit,
+      primary_label, primary_max, secondary_label, secondary_max,
+      options, sort_order
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  for (let i = 0; i < DEFAULT_ESTIMATOR_CATEGORIES.length; i++) {
+    const item = DEFAULT_ESTIMATOR_CATEGORIES[i];
+    insertEstimatorCategory.run(
+      item.id,
+      item.title,
+      item.unitLabel,
+      item.calcMode,
+      item.resultUnit,
+      item.primaryLabel,
+      item.primaryMax,
+      item.secondaryLabel || 'Lebar',
+      item.secondaryMax || 15,
+      JSON.stringify(item.options),
+      item.sortOrder ?? i
+    );
+  }
+}
+
 export { db };
 export default db;
 
@@ -444,4 +496,42 @@ export function getAllServices() {
 
 export function getAllArticles() {
   return db.prepare('SELECT * FROM articles ORDER BY created_at DESC').all() as any[];
+}
+
+export function getEstimatorCategories() {
+  const rows = db
+    .prepare('SELECT * FROM estimator_categories ORDER BY sort_order ASC, rowid ASC')
+    .all() as any[];
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    unitLabel: row.unit_label,
+    calcMode: row.calc_mode === 'linear' ? ('linear' as const) : ('area' as const),
+    resultUnit: row.result_unit || (row.calc_mode === 'linear' ? 'm¹' : 'm²'),
+    primaryLabel: row.primary_label || 'Panjang',
+    primaryMax: Number(row.primary_max) || 30,
+    secondaryLabel: row.secondary_label || 'Lebar',
+    secondaryMax: Number(row.secondary_max) || 15,
+    sortOrder: Number(row.sort_order) || 0,
+    options: (() => {
+      try {
+        const parsed = JSON.parse(row.options || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+  }));
+}
+
+export function getEstimatorConfig() {
+  const row = db
+    .prepare("SELECT value FROM site_settings WHERE key = 'estimator_config'")
+    .get() as { value?: string } | undefined;
+  if (!row?.value) return { ...DEFAULT_ESTIMATOR_CONFIG };
+  try {
+    return { ...DEFAULT_ESTIMATOR_CONFIG, ...JSON.parse(row.value) };
+  } catch {
+    return { ...DEFAULT_ESTIMATOR_CONFIG };
+  }
 }

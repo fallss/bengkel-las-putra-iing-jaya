@@ -229,7 +229,7 @@ export default function ServicesPage() {
       </div>
 
       {/* Kalkulator Biaya */}
-      <section className="pt-8">
+      <section id="kalkulator-estimasi" className="pt-8">
         <CostEstimator />
       </section>
     </div>

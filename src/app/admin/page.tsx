@@ -14,6 +14,7 @@ import {
   HardDrive,
   Eye,
   BookOpen,
+  Calculator,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -92,6 +93,13 @@ export default function AdminDashboardPage() {
             >
               <BookOpen className="w-4 h-4" />
               <span>Kelola Artikel</span>
+            </Link>
+            <Link
+              href="/admin/calculator"
+              className="px-4 py-2 rounded-xl bg-emerald-500/30 hover:bg-emerald-500/40 text-white font-bold text-xs border border-white/20 transition flex items-center space-x-1.5"
+            >
+              <Calculator className="w-4 h-4" />
+              <span>Kalkulator Estimasi</span>
             </Link>
           </div>
         </div>
