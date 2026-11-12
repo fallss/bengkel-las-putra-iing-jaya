@@ -12,34 +12,46 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA } from '@/data/content';
-import { usePageContent } from '@/lib/useDynamicData';
+import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
 import { SubheaderBanner } from '@/components/SubheaderBanner';
 import { BounceHeading } from '@/components/BounceHeading';
 
 export default function ContactPage() {
   const { content } = usePageContent('kontak', {
     hero_title: 'Kontak & Alamat Workshop Bandung Barat',
-    hero_subtitle: 'Silakan hubungi kami untuk survey lokasi, perhitungan estimasi biaya (RAB), atau konsultasi desain gratis di wilayah Bandung Barat & sekitarnya.',
+    hero_subtitle: 'Silakan hubungi kami untuk survey lokasi, perhitungan estimasi biaya (RAB), atau konsultasi pemesanan produk las untuk Bandung Barat dan pengiriman ke seluruh Indonesia.',
     info_title: 'Informasi Workshop',
-    info_desc: 'Anda dapat berkunjung langsung ke workshop kami di Padalarang atau menghubungi tim kami melalui WhatsApp untuk respon cepat.',
+    info_desc: 'Anda dapat berkunjung langsung ke workshop kami di Cikalong Wetan, Bandung Barat atau menghubungi WhatsApp untuk pesanan & pengiriman ke seluruh Indonesia.',
     info_address_val: COMPANY_INFO.address,
     info_hours_val: COMPANY_INFO.hours,
     form_title: 'Kirim Pesan & Konsultasi'
   });
+
+  const settings = useSiteSettings({
+    phone: COMPANY_INFO.phoneFormatted,
+    whatsapp: COMPANY_INFO.waNumber,
+    address: COMPANY_INFO.address,
+    hours: COMPANY_INFO.hours,
+    maps_url: COMPANY_INFO.mapsUrl,
+    service_area: COMPANY_INFO.serviceArea,
+  });
+
+  const waDigits = (settings.whatsapp || COMPANY_INFO.waNumber).replace(/\D/g, '') || COMPANY_INFO.waNumber;
+  const mapsHref = /^https?:\/\//i.test(settings.maps_url || '') ? settings.maps_url : COMPANY_INFO.mapsUrl;
 
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: '',
     phone: '',
     service: 'Kanopi Minimalis & Modern',
-    district: 'Padalarang',
+    district: 'Cikalong Wetan (Bandung Barat)',
     message: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const waUrl = `https://api.whatsapp.com/send?phone=${COMPANY_INFO.waNumber}&text=${encodeURIComponent(
-      `Halo Bengkel Las Bandung Barat, nama saya ${form.name} (${form.phone}).\nSaya ingin konsultasi ${form.service} di wilayah ${form.district}, Bandung Barat: ${form.message}`
+    const waUrl = `https://api.whatsapp.com/send?phone=${waDigits}&text=${encodeURIComponent(
+      `Halo Bengkel Las Bandung Barat, nama saya ${form.name} (${form.phone}).\nSaya ingin konsultasi ${form.service} di wilayah ${form.district}: ${form.message}`
     )}`;
     window.open(waUrl, '_blank');
     setSubmitted(true);
@@ -84,7 +96,7 @@ export default function ContactPage() {
               <div>
                 <span className="font-bold text-white block mb-0.5">Alamat Bengkel:</span>
                 <span className="text-slate-300 leading-relaxed block">
-                  {content.info_address_val || COMPANY_INFO.address}
+                  {settings.address || content.info_address_val || COMPANY_INFO.address}
                 </span>
               </div>
             </div>
@@ -94,12 +106,12 @@ export default function ContactPage() {
               <div>
                 <span className="font-bold text-white block mb-0.5">WhatsApp / Telepon:</span>
                 <a
-                  href={COMPANY_INFO.waLink}
+                  href={`https://api.whatsapp.com/send?phone=${waDigits}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-sky-400 font-mono hover:underline font-bold"
                 >
-                  {COMPANY_INFO.phoneFormatted}
+                  {settings.phone || COMPANY_INFO.phoneFormatted}
                 </a>
               </div>
             </div>
@@ -108,14 +120,21 @@ export default function ContactPage() {
               <Clock className="w-5 h-5 text-slate-400 flex-shrink-0" />
               <div>
                 <span className="font-bold text-white block mb-0.5">Jam Buka:</span>
-                <span className="text-slate-300">{content.info_hours_val || COMPANY_INFO.hours}</span>
+                <span className="text-slate-300">{settings.hours || content.info_hours_val || COMPANY_INFO.hours}</span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <div className="flex items-start gap-2 rounded-xl bg-slate-800/80 border border-slate-700 px-3 py-2 text-[11px] text-sky-200 font-medium leading-relaxed">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 mt-1 flex-shrink-0" />
+                <span>{settings.service_area || COMPANY_INFO.serviceArea}</span>
               </div>
             </div>
           </div>
 
           <div className="pt-2">
             <a
-              href="https://maps.google.com/?q=Padalarang+Bandung+Barat"
+              href={mapsHref}
               target="_blank"
               rel="noreferrer"
               className="w-full inline-flex items-center justify-center space-x-2 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition border border-slate-700"
@@ -189,12 +208,13 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">Wilayah di Bandung Barat</label>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Wilayah / Area Pengiriman</label>
                   <select
                     value={form.district}
                     onChange={(e) => setForm({ ...form, district: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
                   >
+                    <option value="Cikalong Wetan (Bandung Barat)">Cikalong Wetan (Bandung Barat)</option>
                     <option value="Padalarang">Padalarang</option>
                     <option value="Ngamprah">Ngamprah</option>
                     <option value="Lembang">Lembang</option>
@@ -202,10 +222,11 @@ export default function ContactPage() {
                     <option value="Parongpong">Parongpong</option>
                     <option value="Cisarua">Cisarua</option>
                     <option value="Cililin">Cililin</option>
-                    <option value="Cikalongwetan">Cikalongwetan</option>
                     <option value="Cipatat">Cipatat</option>
                     <option value="Kotabaru Parahyangan">Kotabaru Parahyangan</option>
                     <option value="Cimahi / Kota Bandung">Cimahi / Kota Bandung</option>
+                    <option value="Jabodetabek & Luar Kota (Kirim / Pasang)">Jabodetabek & Luar Kota (Kirim / Pasang)</option>
+                    <option value="Seluruh Indonesia (Pengiriman Ekspedisi)">Seluruh Indonesia (Pengiriman Ekspedisi)</option>
                   </select>
                 </div>
               </div>

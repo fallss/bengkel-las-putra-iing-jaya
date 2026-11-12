@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { COMPANY_INFO } from '@/data/content';
-import { usePageContent } from '@/lib/useDynamicData';
+import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
 import {
   MapPin,
   Phone,
@@ -13,15 +13,28 @@ import {
   ChevronRight,
   Sparkles,
   Compass,
-  ArrowRight
+  ArrowRight,
+  ExternalLink
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const { content } = usePageContent('global', {
     footer_tagline: 'Bengkel Las Putra Iing Jaya Stainless & Besi',
-    footer_desc: 'Bengkel Las Putra Iing Jaya Stainless & Besi adalah pusat fabrikasi logam profesional di Kabupaten Bandung Barat. Kami melayani pembuatan kanopi modern, pagar otomatis/manual, railing tangga, tangga spiral, dan konstruksi baja dengan pengerjaan presisi bergaransi resmi.',
+    footer_desc: 'Bengkel Las Putra Iing Jaya Stainless & Besi adalah pusat fabrikasi logam profesional di Kabupaten Bandung Barat. Kami melayani pembuatan kanopi modern, pagar otomatis/manual, railing tangga, tangga spiral, dan konstruksi baja dengan pengerjaan presisi bergaransi resmi hingga pengiriman ke seluruh Indonesia.',
     footer_copyright: '© 2026 Bengkel Las Besi Bandung Barat (Putra Iing Jaya Stainless & Besi). All Rights Reserved.',
   });
+
+  const settings = useSiteSettings({
+    phone: COMPANY_INFO.phoneFormatted,
+    whatsapp: COMPANY_INFO.waNumber,
+    address: COMPANY_INFO.address,
+    hours: COMPANY_INFO.hours,
+    maps_url: COMPANY_INFO.mapsUrl,
+    service_area: COMPANY_INFO.serviceArea,
+  });
+
+  const waDigits = (settings.whatsapp || COMPANY_INFO.waNumber).replace(/\D/g, '') || COMPANY_INFO.waNumber;
+  const mapsHref = /^https?:\/\//i.test(settings.maps_url || '') ? settings.maps_url : COMPANY_INFO.mapsUrl;
   return (
     <footer id="footer" className="relative bg-gradient-to-b from-sky-50/80 via-white to-sky-100/60 text-slate-700 border-t-2 border-sky-200/80 pt-16 pb-12 overflow-hidden">
       {/* Decorative ambient background glows */}
@@ -46,8 +59,8 @@ export const Footer: React.FC = () => {
               <Compass className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">Survey & Estimasi Gratis</h4>
-              <p className="text-xs text-slate-500">Konsultasi langsung ke lokasi seluruh Bandung Barat</p>
+              <h4 className="text-sm font-bold text-slate-900">Survey & Kirim Seluruh Indonesia</h4>
+              <p className="text-xs text-slate-500">Gratis survey Bandung Barat & siap kirim ke seluruh Indonesia</p>
             </div>
           </div>
 
@@ -177,11 +190,20 @@ export const Footer: React.FC = () => {
                 <div className="p-2 rounded-lg bg-sky-50 text-sky-600 flex-shrink-0 mt-0.5">
                   <MapPin className="w-4 h-4" />
                 </div>
-                <div>
-                  <span className="font-bold text-slate-900 block mb-0.5">Alamat Workshop:</span>
+                <div className="space-y-1.5">
+                  <span className="font-bold text-slate-900 block">Alamat Workshop:</span>
                   <span className="text-slate-600 leading-relaxed block">
-                    {COMPANY_INFO.address}
+                    {settings.address || COMPANY_INFO.address}
                   </span>
+                  <a
+                    href={mapsHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-600 hover:text-sky-700 hover:underline"
+                  >
+                    <span>Buka Google Maps</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
 
@@ -192,12 +214,12 @@ export const Footer: React.FC = () => {
                 <div>
                   <span className="font-bold text-slate-900 block mb-0.5">Telepon / WhatsApp:</span>
                   <a
-                    href={COMPANY_INFO.waLink}
+                    href={`https://api.whatsapp.com/send?phone=${waDigits}`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-sky-600 font-mono font-bold hover:underline"
                   >
-                    {COMPANY_INFO.phoneFormatted}
+                    {settings.phone || COMPANY_INFO.phoneFormatted}
                   </a>
                 </div>
               </div>
@@ -208,14 +230,14 @@ export const Footer: React.FC = () => {
                 </div>
                 <div>
                   <span className="font-bold text-slate-900 block mb-0.5">Jam Operasional:</span>
-                  <span className="text-slate-600">{COMPANY_INFO.hours}</span>
+                  <span className="text-slate-600">{settings.hours || COMPANY_INFO.hours}</span>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-slate-100">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-800 bg-sky-50/90 px-2.5 py-1.5 rounded-lg border border-sky-100">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Area: Padalarang, Lembang, Ngamprah, Batujajar, Cimahi</span>
+                <div className="flex items-start gap-1.5 text-[11px] font-semibold text-sky-800 bg-sky-50/90 px-2.5 py-2 rounded-lg border border-sky-100 leading-relaxed">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mt-1.5 flex-shrink-0" />
+                  <span>{settings.service_area || COMPANY_INFO.serviceArea}</span>
                 </div>
               </div>
             </div>

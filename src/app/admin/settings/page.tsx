@@ -35,6 +35,7 @@ export default function AdminSettingsPage() {
     address: '',
     hours: '',
     maps_url: '',
+    service_area: 'Area: Bandung Barat, Jabodetabek & Siap Kirim / Pasang Seluruh Indonesia',
     instagram_url: 'https://www.instagram.com/',
     facebook_url: 'https://www.facebook.com/',
     youtube_url: 'https://www.youtube.com/',
@@ -295,6 +296,20 @@ export default function AdminSettingsPage() {
               value={settings.maps_url || ''}
               onChange={(e) => setSettings({ ...settings, maps_url: e.target.value })}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Cakupan Area Layanan & Pengiriman (Footer & Halaman Kontak)</span>
+            </label>
+            <input
+              type="text"
+              value={settings.service_area ?? ''}
+              onChange={(e) => setSettings({ ...settings, service_area: e.target.value })}
+              placeholder="Area: Bandung Barat, Jabodetabek & Siap Kirim / Pasang Seluruh Indonesia"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500"
             />
           </div>
         </div>

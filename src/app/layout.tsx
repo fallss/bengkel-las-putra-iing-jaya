@@ -68,12 +68,14 @@ export default function RootLayout({
     priceRange: 'Rp 250.000 - Rp 2.500.000',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Jl. Raya Padalarang - Purwakarta, Kertajaya, Kec. Padalarang',
+      streetAddress: 'Kp Warung Domba, RT.1/RW.7, Mandalamukti, Kec. Cikalong Wetan',
       addressLocality: 'Bandung Barat',
       addressRegion: 'Jawa Barat',
-      postalCode: '40553',
+      postalCode: '40556',
       addressCountry: 'ID',
     },
+    hasMap: 'https://maps.app.goo.gl/M7jDaaeUEJhcJMUz5',
+    areaServed: 'Indonesia',
     geo: {
       '@type': 'GeoCoordinates',
       latitude: -6.837,
