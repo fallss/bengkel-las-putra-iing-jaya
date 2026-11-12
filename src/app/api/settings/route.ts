@@ -41,11 +41,18 @@ export async function PUT(req: Request) {
     const syncContent = db.prepare(
       'UPDATE page_contents SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE page_key = ? AND section_key = ?'
     );
-    if (typeof body.topbar_tagline === 'string') {
-      syncContent.run(body.topbar_tagline.trim(), 'global', 'topbar_tagline');
-    }
-    if (typeof body.phone === 'string') {
-      syncContent.run(body.phone.trim(), 'global', 'topbar_phone');
+    const globalSyncMap: Array<[string, string]> = [
+      ['topbar_tagline', 'topbar_tagline'],
+      ['phone', 'topbar_phone'],
+      ['ticker_text_1', 'ticker_text_1'],
+      ['ticker_text_2', 'ticker_text_2'],
+      ['ticker_phone', 'ticker_phone'],
+      ['ticker_btn_label', 'ticker_btn_label'],
+    ];
+    for (const [settingKey, sectionKey] of globalSyncMap) {
+      if (typeof body[settingKey] === 'string') {
+        syncContent.run(body[settingKey].trim(), 'global', sectionKey);
+      }
     }
 
     return NextResponse.json({ success: true, message: 'Pengaturan berhasil diperbarui!' });

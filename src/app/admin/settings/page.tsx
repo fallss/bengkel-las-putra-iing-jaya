@@ -17,6 +17,7 @@ import {
   Youtube,
   Share2,
   ShieldCheck,
+  Megaphone,
 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
@@ -33,6 +34,10 @@ export default function AdminSettingsPage() {
     facebook_url: 'https://www.facebook.com/',
     youtube_url: 'https://www.youtube.com/',
     topbar_tagline: 'Bengkel Las Stainless Steel Terbaik',
+    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
+    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
+    ticker_phone: 'WhatsApp: 0812 2345 9728',
+    ticker_btn_label: 'Whatsapp',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -244,6 +249,75 @@ export default function AdminSettingsPage() {
               onChange={(e) => setSettings({ ...settings, maps_url: e.target.value })}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:ring-2 focus:ring-sky-500"
             />
+          </div>
+        </div>
+
+        {/* Teks Berjalan (Running Text Marquee di Semua Halaman) */}
+        <div className="pt-6 border-t border-slate-100 space-y-4">
+          <div className="rounded-2xl bg-slate-50 border border-slate-200/80 p-4 sm:p-5 space-y-4">
+            <div>
+              <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                <Megaphone className="w-4 h-4 text-sky-500" />
+                <span>Teks Berjalan (Running Text di Setiap Halaman)</span>
+              </h2>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Teks marquee bergerak di bawah banner pada halaman Home, Tentang Kami, Layanan, Galeri, Artikel, dan Kontak beserta label tombol kanan.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Teks Berjalan 1
+                </label>
+                <input
+                  type="text"
+                  value={settings.ticker_text_1 ?? ''}
+                  onChange={(e) => setSettings({ ...settings, ticker_text_1: e.target.value })}
+                  placeholder="Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Teks Berjalan 2
+                </label>
+                <input
+                  type="text"
+                  value={settings.ticker_text_2 ?? ''}
+                  onChange={(e) => setSettings({ ...settings, ticker_text_2: e.target.value })}
+                  placeholder="Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Teks Nomor WhatsApp di Ticker
+                </label>
+                <input
+                  type="text"
+                  value={settings.ticker_phone ?? ''}
+                  onChange={(e) => setSettings({ ...settings, ticker_phone: e.target.value })}
+                  placeholder="WhatsApp: 0812 2345 9728"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Teks Tombol Kanan Ticker
+                </label>
+                <input
+                  type="text"
+                  value={settings.ticker_btn_label ?? ''}
+                  onChange={(e) => setSettings({ ...settings, ticker_btn_label: e.target.value })}
+                  placeholder="Whatsapp"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

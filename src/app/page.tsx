@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { COMPANY_INFO, GALLERY_ITEMS, ARTICLES_DATA, SERVICES_DATA, ArticleItem, GalleryPhoto, ServiceItem } from '@/data/content';
 import { CostEstimator } from '@/components/CostEstimator';
-import { usePageContent } from '@/lib/useDynamicData';
+import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
 import { BounceHeading } from '@/components/BounceHeading';
 import { Pagination } from '@/components/Pagination';
 
@@ -97,10 +97,19 @@ export default function HomePage() {
     ticker_btn_label: 'Whatsapp',
   });
 
-  const tickerText1 = globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
-  const tickerText2 = globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
-  const tickerPhone = globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
-  const tickerBtnLabel = globalContent.ticker_btn_label || 'Whatsapp';
+  const siteSettings = useSiteSettings({
+    whatsapp: COMPANY_INFO.waNumber,
+    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
+    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
+    ticker_phone: 'WhatsApp: 0812 2345 9728',
+    ticker_btn_label: 'Whatsapp',
+  });
+
+  const tickerText1 = siteSettings.ticker_text_1 || globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
+  const tickerText2 = siteSettings.ticker_text_2 || globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
+  const tickerPhone = siteSettings.ticker_phone || globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
+  const tickerBtnLabel = siteSettings.ticker_btn_label || globalContent.ticker_btn_label || 'Whatsapp';
+  const tickerWaDigits = (siteSettings.whatsapp || COMPANY_INFO.waNumber || '').replace(/\D/g, '') || COMPANY_INFO.waNumber;
 
   const heroSlides = React.useMemo(() => {
     if (content?.hero_slides) {
@@ -536,7 +545,7 @@ export default function HomePage() {
               {/* Bagian Kanan: Tombol Pill Whatsapp Navy Blue dengan Panah */}
               <div className="flex-shrink-0">
                 <a
-                  href="https://api.whatsapp.com/send?phone=6281223459728"
+                  href={`https://api.whatsapp.com/send?phone=${tickerWaDigits}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-[#0c1145] hover:bg-sky-500 text-white font-medium text-[11px] sm:text-xs transition-colors duration-200 shadow-sm group whitespace-nowrap"

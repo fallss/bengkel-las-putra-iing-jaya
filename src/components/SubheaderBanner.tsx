@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { usePageContent } from '@/lib/useDynamicData';
+import { usePageContent, useSiteSettings } from '@/lib/useDynamicData';
 
 interface SubheaderBannerProps {
   breadcrumb?: string;
@@ -20,14 +20,22 @@ export function SubheaderBanner({
     ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
     ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
     ticker_phone: 'WhatsApp: 0812 2345 9728',
-    ticker_btn_label: 'Whatsapp'
+    ticker_btn_label: 'Whatsapp',
+  });
+  const settings = useSiteSettings({
+    whatsapp: '6281223459728',
+    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
+    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
+    ticker_phone: 'WhatsApp: 0812 2345 9728',
+    ticker_btn_label: 'Whatsapp',
   });
   const activeImage = bannerImage || pageContent?.banner_image || '/assets/images/asset_12_subheader-oke.jpg';
 
-  const t1 = globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
-  const t2 = globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
-  const tp = globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
-  const btnLabel = globalContent.ticker_btn_label || 'Whatsapp';
+  const t1 = settings.ticker_text_1 || globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
+  const t2 = settings.ticker_text_2 || globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
+  const tp = settings.ticker_phone || globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
+  const btnLabel = settings.ticker_btn_label || globalContent.ticker_btn_label || 'Whatsapp';
+  const waDigits = (settings.whatsapp || '6281223459728').replace(/\D/g, '') || '6281223459728';
 
   return (
     <div className="w-full">
@@ -93,7 +101,7 @@ export function SubheaderBanner({
           {/* Bagian Kanan: Tombol Pill Whatsapp Navy Blue dengan Panah */}
           <div className="flex-shrink-0">
             <a
-              href="https://api.whatsapp.com/send?phone=6281223459728"
+              href={`https://api.whatsapp.com/send?phone=${waDigits}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-[#0c1145] hover:bg-sky-500 text-white font-medium text-[11px] sm:text-xs transition-colors duration-200 shadow-sm group whitespace-nowrap"

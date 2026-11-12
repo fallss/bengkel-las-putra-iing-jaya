@@ -393,6 +393,13 @@ export const PAGE_SECTION_SCHEMAS: Record<string, PageSectionSchema[]> = {
       description:
         'Teks berjalan otomatis di bawah subheader banner halaman Beranda dan sub-halaman lainnya beserta label tombol kanan.',
       keys: ['ticker_text_1', 'ticker_text_2', 'ticker_phone', 'ticker_btn_label'],
+      externalModule: {
+        label: 'Buka Kontak & Sosmed',
+        href: '/admin/settings',
+        badge: 'Teks Berjalan Semua Halaman',
+        description:
+          'Keempat isi teks berjalan dan tombol WhatsApp pada strip ticker juga dapat diedit langsung dari menu Kontak & Sosmed.',
+      },
     },
     {
       id: 'global-footer',
