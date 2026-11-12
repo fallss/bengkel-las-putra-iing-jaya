@@ -90,6 +90,18 @@ export default function HomePage() {
     cta_desc: 'Konsultasikan desain, ukuran, dan estimasi biaya (RAB) bersama tim ahli Bengkel Las Putra Iing Jaya. Survey lokasi dan konsultasi 100% Gratis di seluruh area Bandung Barat.',
   });
 
+  const { content: globalContent } = usePageContent('global', {
+    ticker_text_1: 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel',
+    ticker_text_2: 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat',
+    ticker_phone: 'WhatsApp: 0812 2345 9728',
+    ticker_btn_label: 'Whatsapp',
+  });
+
+  const tickerText1 = globalContent.ticker_text_1 || 'Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel';
+  const tickerText2 = globalContent.ticker_text_2 || 'Pengerjaan Cepat, Rapi & Bergaransi Resmi di Bandung Barat';
+  const tickerPhone = globalContent.ticker_phone || 'WhatsApp: 0812 2345 9728';
+  const tickerBtnLabel = globalContent.ticker_btn_label || 'Whatsapp';
+
   const heroSlides = React.useMemo(() => {
     if (content?.hero_slides) {
       try {
@@ -502,20 +514,20 @@ export default function HomePage() {
                 <div className="running-marquee items-center gap-10 text-xs text-slate-700 font-normal select-none">
                   {/* Loop 1 */}
                   <div className="flex items-center gap-10 flex-shrink-0">
-                    <span>Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel</span>
+                    <span>{tickerText1}</span>
                     <span className="text-sky-500 font-bold text-xs">★</span>
-                    <span>Pengerjaan Cepat, Rapi &amp; Bergaransi Resmi di Bandung Barat</span>
+                    <span>{tickerText2}</span>
                     <span className="text-slate-300">•</span>
-                    <span>WhatsApp: 0812 2345 9728</span>
+                    <span>{tickerPhone}</span>
                     <span className="text-sky-500 font-bold text-xs">★</span>
                   </div>
                   {/* Loop 2 (Seamless loop) */}
                   <div className="flex items-center gap-10 flex-shrink-0">
-                    <span>Jasa Las Custom dan Fabrikasi Besi atau Stainless Steel</span>
+                    <span>{tickerText1}</span>
                     <span className="text-sky-500 font-bold text-xs">★</span>
-                    <span>Pengerjaan Cepat, Rapi &amp; Bergaransi Resmi di Bandung Barat</span>
+                    <span>{tickerText2}</span>
                     <span className="text-slate-300">•</span>
-                    <span>WhatsApp: 0812 2345 9728</span>
+                    <span>{tickerPhone}</span>
                     <span className="text-sky-500 font-bold text-xs">★</span>
                   </div>
                 </div>
@@ -529,7 +541,7 @@ export default function HomePage() {
                   rel="noreferrer"
                   className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-[#0c1145] hover:bg-sky-500 text-white font-medium text-[11px] sm:text-xs transition-colors duration-200 shadow-sm group whitespace-nowrap"
                 >
-                  <span>Whatsapp</span>
+                  <span>{tickerBtnLabel}</span>
                   <svg
                     className="w-3.5 h-3.5 fill-current group-hover:translate-x-0.5 transition-transform"
                     viewBox="0 0 16 16"

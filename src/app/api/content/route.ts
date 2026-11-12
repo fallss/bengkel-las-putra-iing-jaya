@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,9 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  if (!isAdminAuthenticated()) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const body = await req.json();
     const { id, page_key, section_key, title, content, content_type, dimension_hint } = body;
@@ -57,6 +61,9 @@ export async function PUT(req: Request) {
 }
 
 export async function POST(req: Request) {
+  if (!isAdminAuthenticated()) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const body = await req.json();
     const { page_key, section_key, title, content, content_type, dimension_hint } = body;
@@ -83,6 +90,9 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  if (!isAdminAuthenticated()) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

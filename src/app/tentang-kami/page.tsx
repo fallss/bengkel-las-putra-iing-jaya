@@ -114,7 +114,7 @@ export default function AboutPage() {
 
         <div className="lg:col-span-6">
           <div className="grid grid-cols-2 gap-4">
-            {WORKSHOP_IMAGES.map((img, idx) => (
+            {[content.story_image || WORKSHOP_IMAGES[0], ...WORKSHOP_IMAGES.slice(1)].map((img, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-100 aspect-[4/3] group relative"
